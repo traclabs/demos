@@ -60,6 +60,28 @@
             </plugin>
         </gazebo>
 
+        <gazebo reference="ee_camera">
+            <sensor type="camera" name="camera_sensor">
+                <pose>0 0 0 3.14 0 0</pose>
+                <visualize>1</visualize>
+                <update_rate>10.0</update_rate>
+                <camera>
+                    <!-- <horizontal_fov>1.3962634</horizontal_fov> -->
+                    <image>
+                        <width>800</width>
+                        <height>800</height>
+                        <format>R8G8B8</format>
+                    </image>
+                    <noise>
+                    <type>gaussian</type>
+                    <stddev>0.007</stddev>
+                    </noise>
+                </camera>
+                <always_on>1</always_on>
+                <topic>image_raw</topic>
+            </sensor>
+        </gazebo>
+
         <!-- Colors -->
         <material name="White">
             <color rgba="1.0 1.0 1.0 1.0"/>
@@ -68,5 +90,4 @@
 
     </xacro:macro>
 
-</robot>  
-
+</robot>

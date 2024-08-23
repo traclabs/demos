@@ -335,6 +335,16 @@ The link CoM locations (with respect to link frame) are set to zero as the inert
 
   </link>
 
+  <!-- Joint 7: Wrist Roll Joint -->
+  <joint name="ee_to_camera" type="fixed">
+    <parent link="EE_SSRMS"/>
+    <child link="ee_camera"/>
+    <origin rpy="0 1.570 0" xyz="-0.30 0.0 -1.15"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0" upper="0" effort="0" velocity="0"/>
+  </joint>
+
+  <!-- camera link -->
+  <link name="ee_camera"/>
 
 </robot>
-

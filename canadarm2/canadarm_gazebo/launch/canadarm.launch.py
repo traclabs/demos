@@ -2,10 +2,10 @@
 
 import os
 from launch import LaunchDescription  # type: ignore
-from launch.actions import ExecuteProcess, RegisterEventHandler, IncludeLaunchDescription, SetEnvironmentVariable  # type: ignore
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, RegisterEventHandler, IncludeLaunchDescription, SetEnvironmentVariable  # type: ignore
 from launch.event_handlers import OnProcessExit  # type: ignore
 from launch_ros.actions import Node  # type: ignore
-from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution
 
 from ament_index_python.packages import get_package_share_directory  # type: ignore
 
@@ -14,6 +14,13 @@ import xacro  # type: ignore
 
 def generate_launch_description():
     """Generate launch description with multiple components."""
+    gz_world = LaunchConfiguration('gz_world')
+
+    gz_world_launch_arg = DeclareLaunchArgument(
+        "gz_world",
+        description="Name of world file to load from canadarm/worlds/",
+        default_value=TextSubstitution(text="simple.world")
+    )
 
     canadarm_gazebo_path = get_package_share_directory("canadarm_gazebo")
 
@@ -41,7 +48,7 @@ def generate_launch_description():
         "urdf",
         "SSRMS_Canadarm2.urdf.xacro",
     )
-    leo_model = os.path.join(canadarm_gazebo_path, "worlds", "simple.world")
+    world_path = PathJoinSubstitution([canadarm_gazebo_path, 'worlds', gz_world])
 
     doc = xacro.process_file(
         urdf_model_path, mappings={"xyz": "1.0 0.0 1.5", "rpy": "3.1416 0.0 0.0"}
@@ -52,7 +59,7 @@ def generate_launch_description():
             PathJoinSubstitution([get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py']),
             launch_arguments = [
                ('gz_args', [
-                   leo_model,
+                   world_path,
                    ' -r',
                    ' -v 4' 
                ])
@@ -78,6 +85,12 @@ def generate_launch_description():
         ],
         output="screen",
     )
+
+    image_bridge = Node(
+        package='ros_gz_image',
+        executable='image_bridge',
+        arguments=['/image_raw', '/image_raw'],
+        output='screen')
 
     # Control
     load_joint_state_broadcaster = ExecuteProcess(
@@ -115,11 +128,13 @@ def generate_launch_description():
 
     return LaunchDescription(
         [   
+            gz_world_launch_arg,
             env_gz_plugin,
             env_gz_resource,
             start_world,
             robot_state_publisher,
             spawn,
+            image_bridge,
             RegisterEventHandler(
                 OnProcessExit(
                     target_action=spawn,
