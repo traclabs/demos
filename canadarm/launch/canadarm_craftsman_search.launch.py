@@ -74,7 +74,7 @@ def generate_launch_description():
     )
 
     parameters = {
-      'robot_description': doc.toprettyxml(indent="    "),
+      'robot_description': robot_xacro.toprettyxml(indent="    "),
       'robot_description_semantic': robot_description_semantic,
       'group': "canadarm",
       'reference_frame': 'Base_SSRMS',
