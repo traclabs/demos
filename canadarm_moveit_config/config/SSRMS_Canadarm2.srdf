@@ -47,11 +47,11 @@
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
     <disable_collisions link1="B1" link2="B2" reason="User"/>
     <disable_collisions link1="B1" link2="Base_SSRMS" reason="User"/>
-    <disable_collisions link1="B1" link2="EE_SSRMS" reason="User"/>
+    <!-- disable_collisions link1="B1" link2="EE_SSRMS" reason="User"/ -->
     <disable_collisions link1="B2" link2="B3" reason="User"/>
     <disable_collisions link1="B3" link2="B4" reason="User"/>
     <disable_collisions link1="B4" link2="B5" reason="User"/>
     <disable_collisions link1="B5" link2="B6" reason="User"/>
     <disable_collisions link1="B6" link2="EE_SSRMS" reason="User"/>
-    <disable_collisions link1="Base_SSRMS" link2="EE_SSRMS" reason="User"/>
+    <!-- disable_collisions link1="Base_SSRMS" link2="EE_SSRMS" reason="User"/ -->
 </robot>
