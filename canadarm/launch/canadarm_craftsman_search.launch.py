@@ -35,7 +35,7 @@ def generate_launch_description():
     gz_world_launch_arg = DeclareLaunchArgument(
         "gz_world",
         description="Name of world file to load from canadarm/worlds/", 
-        default_value=TextSubstitution(text="simple.world")
+        default_value=TextSubstitution(text="lunar.world")
     )
 
     env = {'IGN_GAZEBO_SYSTEM_PLUGIN_PATH':
@@ -83,8 +83,8 @@ def generate_launch_description():
     test_search = Node(package='sandbox',
       executable='demo_canadarm_search',
       output='screen',
-      # prefix=['xterm -e gdb -ex run --args'],
-      parameters=[parameters]
+      parameters=[parameters],
+      arguments=['--ros-args', '--log-level', ['CraftsmanSearch:=','debug', 'CollisionDetection:=','debug']]
     )
 
     spawn = Node(
@@ -114,7 +114,7 @@ def generate_launch_description():
         executable="rviz2",
         name="rviz2",
         output="screen",
-        # arguments=["-d", rviz_config]
+        arguments=["-d", "src/demos/canadarm/config/demo.rviz"]
     )
 
     return LaunchDescription(
@@ -124,7 +124,6 @@ def generate_launch_description():
             robot_state_publisher,
             spawn,
             image_bridge,
-            run_move_arm,
             rviz_node,
             RegisterEventHandler(
                 OnProcessExit(
@@ -132,7 +131,6 @@ def generate_launch_description():
                     on_exit=[load_joint_state_broadcaster],
                 )
             ),
-
             RegisterEventHandler(
                 OnProcessExit(
                     target_action=load_joint_state_broadcaster,
