@@ -84,7 +84,7 @@ def generate_launch_description():
       executable='demo_canadarm_search',
       output='screen',
       parameters=[parameters],
-      arguments=['--ros-args', '--log-level', ['CraftsmanSearch:=','debug', 'CollisionDetection:=','debug']]
+      arguments=['--ros-args', '--log-level', ['CraftsmanSearch,CollisionDetection:=','debug']]
     )
 
     spawn = Node(
