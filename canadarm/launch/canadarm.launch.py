@@ -15,6 +15,13 @@ import xacro
 
 def generate_launch_description():
     # ld = LaunchDescription()
+    gz_world = LaunchConfiguration('gz_world')
+
+    gz_world_launch_arg = DeclareLaunchArgument(
+        "gz_world",
+        description="Name of world file to load from canadarm/worlds/", 
+        default_value=TextSubstitution(text="simple.world")
+    )
 
     canadarm_demos_path = get_package_share_directory('canadarm')
     simulation_models_path = get_package_share_directory('simulation')
@@ -27,8 +34,7 @@ def generate_launch_description():
 
 
     urdf_model_path = os.path.join(simulation_models_path, 'models', 'canadarm', 'urdf', 'SSRMS_Canadarm2.urdf.xacro')
-    leo_model = os.path.join(canadarm_demos_path, 'worlds', 'simple.world')
-
+    world_path = PathJoinSubstitution([canadarm_demos_path, 'worlds', gz_world])
 
     doc = xacro.process_file(urdf_model_path, mappings={'xyz' : '1.0 0.0 1.5', 'rpy': '3.1416 0.0 0.0'})
     robot_description = {'robot_description': doc.toxml()}
@@ -40,6 +46,12 @@ def generate_launch_description():
     #    output='screen'
     #)
 
+    image_bridge = Node(
+        package='ros_gz_image',
+        executable='image_bridge',
+        arguments=['/image_raw', '/image_raw'],
+        output='screen')
+
     run_move_arm = Node(
         package="canadarm",
         executable="move_arm",
@@ -48,7 +60,7 @@ def generate_launch_description():
 
 
     start_world = ExecuteProcess(
-        cmd=['ign gazebo', leo_model, '-r'],
+        cmd=['ign gazebo', world_path, '-r'],
         output='screen',
         additional_env=env,
         shell=True
@@ -88,10 +100,12 @@ def generate_launch_description():
 
 
     return LaunchDescription([
+        gz_world_launch_arg,
         start_world,
         robot_state_publisher,
         spawn,
         #run_node,
+        image_bridge,
         run_move_arm,
 
         RegisterEventHandler(
