@@ -1,4 +1,4 @@
-FROM osrf/space-ros:latest
+FROM osrf/space-ros:humble-2024.10.0
 
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 ENV ROS_DISTRO=humble
@@ -19,7 +19,7 @@ COPY .defaults.yaml .defaults.yaml
 
 # Build the workspace
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
-    && source $HOME/spaceros/install/setup.bash \
+    && source "${SPACEROS_DIR}"/install/setup.bash \
     && colcon build --symlink-install
 
 # Source the workspace
