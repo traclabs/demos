@@ -102,7 +102,7 @@ hardware_interface::CallbackReturn TrickSystem::on_configure(const rclcpp_lifecy
   incoming_data_thread_ = std::thread([this]() {
     while (rclcpp::ok())
     {
-      if (this->get_state().label() == "active")
+      if (this->get_lifecycle_state().label() == "active")
       {
         std::string incoming_msg;
         this->trick_conn_socket_ >> incoming_msg;

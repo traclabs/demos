@@ -49,9 +49,11 @@ ENV PYTHON_VERSION=3
 
 # ------------------------------------------------------------------------------
 # Get Trick version 19.7.2 from GitHub, configure and build it.
+# Note: For Jazzy, we need a fix in TRICK to work in 24.04 (commit 4781cfe)
+# there is not yet a tag including the fix commit
 # ------------------------------------------------------------------------------
 WORKDIR /opt/trick
-RUN git clone --branch 19.7.2 --depth 1 https://github.com/nasa/trick.git .
+RUN git clone --branch master --depth 1 https://github.com/nasa/trick.git . && git checkout 46b4817
 # cd into the directory we just created and ..
 # configure and make Trick.
 RUN ./configure && make
@@ -83,7 +85,7 @@ RUN rm -rf build log src
 # Install RBDL, which is used for calculating forward dynamics in trick
 # ------------------------------------------------------------------------------
 WORKDIR /opt/rbdl
-RUN git clone --branch v3.3.0 --depth 1 https://github.com/rbdl/rbdl.git . \
+RUN git clone --branch v3.3.1 --depth 1 https://github.com/rbdl/rbdl.git . \
   && git submodule update --init --remote --depth 1 addons/urdfreader/
 RUN   mkdir ./rbdl-build \ 
   && cd rbdl-build/ \
