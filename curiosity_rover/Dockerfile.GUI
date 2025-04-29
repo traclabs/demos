@@ -1,13 +1,12 @@
-FROM ros:humble-ros-core-jammy
+FROM ros:jazzy-ros-core-noble
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-ENV ROS_DISTRO=humble
+ENV ROS_DISTRO=jazzy
 ENV USERNAME=spaceros-user
 ENV HOME=/home/spaceros-user
-ENV IGNITION_VERSION=fortress
-ENV GZ_VERSION=fortress
+ENV GZ_VERSION=harmonic
 
 # Install dependencies
 RUN apt update && apt install -y ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
@@ -23,9 +22,9 @@ RUN wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pk
 RUN apt-get update -qq \
     && apt-get install -y \
     gz-${GZ_VERSION} \
-    libgz-sim7 \
-    libgz-transport12 \
-    libgz-gui7 \
+    libgz-sim8 \
+    libgz-transport13 \
+    libgz-gui8 \
     build-essential\
     ros-${ROS_DISTRO}-rcl-interfaces\
     ros-${ROS_DISTRO}-rclcpp\
@@ -61,7 +60,7 @@ RUN apt update \
     && rosdep init \
     && rosdep update
 
-RUN . /opt/ros/humble/setup.sh \
+RUN . /opt/ros/jazzy/setup.sh \
     && cd ${HOME}/curiosity_ws \
     && apt update \
     && rosdep install --from-paths src --ignore-src -r -y \
@@ -69,8 +68,8 @@ RUN . /opt/ros/humble/setup.sh \
 
 WORKDIR ${HOME}/curiosity_ws
 
-RUN apt update && apt install -y ros-humble-ros-ign-gazebo
-RUN echo "source /opt/ros/humble/setup.bash" >> ${HOME}/.bashrc
+RUN apt update && apt install -y gz-harmonic
+RUN echo "source /opt/ros/jazzy/setup.bash" >> ${HOME}/.bashrc
 RUN echo "source ${HOME}/curiosity_ws/install/setup.bash" >> ${HOME}/.bashrc
 
-CMD ign gazebo
+CMD gz sim
