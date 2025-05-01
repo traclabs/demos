@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM osrf/space-ros:humble-2024.10.0
+FROM osrf/space-ros:jazzy-2025.04.0
 
 # Install trick dependencies.
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -45,10 +45,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 ENV PYTHON_VERSION=3
 
-# Get Trick version 19.7.2 from GitHub, configure and build it.
+# Note: For Jazzy, we need a fix in TRICK to work in 24.04 (commit 4781cfe)
+# there is not yet a tag including the fix commit, checking out the latest one tested to work
 RUN mkdir ${HOME_DIR}/trick
 WORKDIR ${HOME_DIR}/trick
-RUN git clone --branch 19.7.2 --depth 1 https://github.com/nasa/trick.git .
+RUN git clone --branch master https://github.com/nasa/trick.git . && git checkout 1b6d75b
 RUN ./configure && make
 
 # Add ${TRICK_HOME}/bin to the PATH variable.
@@ -70,7 +71,7 @@ RUN rm -rf build log src
 # Install RBDL, which is used for calculating forward dynamics in trick.
 RUN mkdir ${HOME_DIR}/rbdl
 WORKDIR ${HOME_DIR}/rbdl
-RUN git clone --branch v3.3.0 --depth 1 https://github.com/rbdl/rbdl.git . \
+RUN git clone --branch v3.3.1 --depth 1 https://github.com/rbdl/rbdl.git . \
   && git submodule update --init --remote --depth 1 addons/urdfreader/
 RUN   mkdir ./rbdl-build \
   && cd rbdl-build/ \
