@@ -135,17 +135,17 @@ The following table explains the key topics used in the Ingenuity Flight Simulat
 
 | Topic Name | Description | Data Type | Direction |
 |------------|-------------|-----------|-----------|
-| `/angle_of_attack` | Controls the collective pitch of the rotor blades | `ignition.msgs.Double` | Input to Simulation |
-| `/alpha_c` | Lateral cyclic control input | `ignition.msgs.Double` | Input to Simulation |
-| `/alpha_s` | Longitudinal cyclic control input | `ignition.msgs.Double` | Input to Simulation |
-| `/desired_altitude` | Sets the target altitude for the flight controller | `ignition.msgs.Double` | Input to Controller |
-| `/imu` | Provides IMU sensor data from the Ingenuity model | `ignition.msgs.IMU` | Output from Simulation |
-| `/altimeter` | Provides altitude data from the Ingenuity model | `ignition.msgs.Altimeter` | Output from Simulation |
-| `/camera` | Provides camera feed from the Ingenuity model | `ignition.msgs.Image` | Output from Simulation |
-| `/wrench/ingenuity_model/blade_1` | Forces and torques applied to blade 1 | `ignition.msgs.Wrench` | Output from Simulation |
-| `/wrench/ingenuity_model/blade_2` | Forces and torques applied to blade 2 | `ignition.msgs.Wrench` | Output from Simulation |
-| `/wrench/ingenuity_model/blade_3` | Forces and torques applied to blade 3 | `ignition.msgs.Wrench` | Output from Simulation |
-| `/wrench/ingenuity_model/blade_4` | Forces and torques applied to blade 4 | `ignition.msgs.Wrench` | Output from Simulation |
+| `/angle_of_attack` | Controls the collective pitch of the rotor blades | `gz.msgs.Double` | Input to Simulation |
+| `/alpha_c` | Lateral cyclic control input | `gz.msgs.Double` | Input to Simulation |
+| `/alpha_s` | Longitudinal cyclic control input | `gz.msgs.Double` | Input to Simulation |
+| `/desired_altitude` | Sets the target altitude for the flight controller | `gz.msgs.Double` | Input to Controller |
+| `/imu` | Provides IMU sensor data from the Ingenuity model | `gz.msgs.IMU` | Output from Simulation |
+| `/altimeter` | Provides altitude data from the Ingenuity model | `gz.msgs.Altimeter` | Output from Simulation |
+| `/camera` | Provides camera feed from the Ingenuity model | `gz.msgs.Image` | Output from Simulation |
+| `/wrench/ingenuity_model/blade_1` | Forces and torques applied to blade 1 | `gz.msgs.Wrench` | Output from Simulation |
+| `/wrench/ingenuity_model/blade_2` | Forces and torques applied to blade 2 | `gz.msgs.Wrench` | Output from Simulation |
+| `/wrench/ingenuity_model/blade_3` | Forces and torques applied to blade 3 | `gz.msgs.Wrench` | Output from Simulation |
+| `/wrench/ingenuity_model/blade_4` | Forces and torques applied to blade 4 | `gz.msgs.Wrench` | Output from Simulation |
 
 
 ## License

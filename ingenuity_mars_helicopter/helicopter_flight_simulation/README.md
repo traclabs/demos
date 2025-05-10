@@ -51,12 +51,12 @@ The simulator publishes wrench (force and torque) data to a topic structured as:
 
 To control the collective pitch of the rotors, publish to the `/angle_of_attack` topic:
 ```bash
-ign topic -t /angle_of_attack -m ignition.msgs.Double -p "data: 0.1"
+gz topic -t /angle_of_attack -m gz.msgs.Double -p "data: 0.1"
 ```
 By publishing to the /desired_altitude topic the collective will be automatically adjusted by the ingenuity flight controller plugin
 
 ```bash
-ign topic -t /desired_altitude -m ignition.msgs.Double -p "data: 42"
+gz topic -t /desired_altitude -m gz.msgs.Double -p "data: 42"
 ```
 
 #### Cyclic Control:
@@ -84,8 +84,8 @@ To control Ingenuity's cyclic pitch in the simulation, use the following topics:
 
 Example:
 ```bash
-ign topic -t /alpha_c -m ignition.msgs.Double -p "data: 0.00001"
-ign topic -t /alpha_s -m ignition.msgs.Double -p "data: 0.00001"
+gz topic -t /alpha_c -m gz.msgs.Double -p "data: 0.00001"
+gz topic -t /alpha_s -m gz.msgs.Double -p "data: 0.00001"
 ```
 
 These commands allow you to adjust the cyclic control of Ingenuity, enabling more complex maneuvers beyond simple altitude changes.

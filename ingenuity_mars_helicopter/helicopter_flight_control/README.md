@@ -38,7 +38,7 @@ The `helicopter_flight_control` plugin is responsible for controlling the altitu
 ## Usage
 
 ```bash
-ign topic -t /desired_altitude -m ignition.msgs.Double -p "data: 25.0"
+gz topic -t /desired_altitude -m gz.msgs.Double -p "data: 25.0"
 ```
 
 ```xml

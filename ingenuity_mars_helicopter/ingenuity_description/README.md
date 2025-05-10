@@ -40,7 +40,7 @@ The following system plugins from Gazebo are used in the simulation:
 ## Sensors
 # Ingenuity Sensors and Data Access
 
-The Ingenuity simulation includes several sensors to mimic the real Mars helicopter. Here's a detailed explanation of each sensor and how to access its data using the `ign topic -et` command.
+The Ingenuity simulation includes several sensors to mimic the real Mars helicopter. Here's a detailed explanation of each sensor and how to access its data using the `gz topic -et` command.
 
 ## 1. RGB Camera
 
