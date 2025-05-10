@@ -41,14 +41,14 @@
 #include "gz/sim/components/Pose.hh"
 #include <gz/msgs/wrench.pb.h>  // Include for wrench messages
 #include <gz/msgs/double.pb.h>  // Include for double messages
-#include <gz/transport/Node.hh> // Include for Ignition Transport
+#include <gz/transport/Node.hh> // Include for Gazebo Transport
 
 using namespace gz;
 using namespace gz::sim;
 using namespace systems;
 
 // Define private data for HelicopterControl plugin
-class ignition::gazebo::systems::HelicopterControlPrivate
+class gz::sim::systems::HelicopterControlPrivate
 {
 public:
   void Load(const EntityComponentManager &_ecm,
@@ -97,7 +97,7 @@ public:
 public:
   sdf::ElementPtr sdfConfig;
 
-  /// \brief Ignition Transport node for publishing rotor speed data
+  /// \brief Gazebo Transport node for publishing rotor speed data
 public:
   gz::transport::Node node;
 
@@ -114,7 +114,7 @@ public:
   void OnDesiredAltitudeMsg(const gz::msgs::Double &_msg)
   {
     std::lock_guard<std::mutex> lock(this->desiredAltitudeMutex);
-    ignmsg << "Received desired altitude message: " << _msg.data() << std::endl;
+    gzmsg << "Received desired altitude message: " << _msg.data() << std::endl;
     this->desired_altitude = _msg.data();
   }
 };
@@ -140,14 +140,14 @@ void HelicopterControlPrivate::Load(const EntityComponentManager &_ecm,
 
     if (entities.empty())
     {
-      ignerr << "Link with name[" << linkName << "] not found. "
+      gzerr << "Link with name[" << linkName << "] not found. "
              << "The HelicopterControl will not generate forces\n";
       this->validConfig = false;
       return;
     }
     else if (entities.size() > 1)
     {
-      ignwarn << "Multiple link entities with name[" << linkName << "] found. "
+      gzwarn << "Multiple link entities with name[" << linkName << "] found. "
               << "Using the first one.\n";
     }
 
@@ -155,14 +155,14 @@ void HelicopterControlPrivate::Load(const EntityComponentManager &_ecm,
     if (!_ecm.EntityHasComponentType(this->linkEntity, components::Link::typeId))
     {
       this->linkEntity = kNullEntity;
-      ignerr << "Entity with name[" << linkName << "] is not a link\n";
+      gzerr << "Entity with name[" << linkName << "] is not a link\n";
       this->validConfig = false;
       return;
     }
   }
   else
   {
-    ignerr << "The HelicopterControl system requires the 'link_name' parameter\n";
+    gzerr << "The HelicopterControl system requires the 'link_name' parameter\n";
     this->validConfig = false;
     return;
   }
@@ -180,7 +180,7 @@ HelicopterControl::HelicopterControl()
 //////////////////////////////////////////////////
 void HelicopterControlPrivate::Update(EntityComponentManager &_ecm)
 {
-  IGN_PROFILE("HelicopterControlPrivate::Update");
+  GZ_PROFILE("HelicopterControlPrivate::Update");
 
   // Get linear velocity and pose at cp in world frame
   const auto worldLinVel =
@@ -217,7 +217,7 @@ void HelicopterControlPrivate::Update(EntityComponentManager &_ecm)
   angleOfAttackMsg.set_data(angle_of_attack);
   this->angleOfAttackPub.Publish(angleOfAttackMsg);
 
-  // igndbg << "Current Altitude: " << this->current_altitude
+  // gzdbg << "Current Altitude: " << this->current_altitude
   //        << ", Desired Altitude: " << this->desired_altitude << std::endl;
 }
 
@@ -229,7 +229,7 @@ void HelicopterControl::Configure(const Entity &_entity,
   this->dataPtr->model = Model(_entity);
   if (!this->dataPtr->model.Valid(_ecm))
   {
-    ignerr << "The HelicopterControl system should be attached to a model entity. "
+    gzerr << "The HelicopterControl system should be attached to a model entity. "
            << "Failed to initialize." << std::endl;
     return;
   }
@@ -239,11 +239,11 @@ void HelicopterControl::Configure(const Entity &_entity,
 //////////////////////////////////////////////////
 void HelicopterControl::PreUpdate(const UpdateInfo &_info, EntityComponentManager &_ecm)
 {
-  IGN_PROFILE("HelicopterControl::PreUpdate");
+  GZ_PROFILE("HelicopterControl::PreUpdate");
 
   if (_info.dt < std::chrono::steady_clock::duration::zero())
   {
-    ignwarn << "Detected jump back in time ["
+    gzwarn << "Detected jump back in time ["
             << std::chrono::duration_cast<std::chrono::seconds>(_info.dt).count()
             << "s]. System may not work properly." << std::endl;
   }
@@ -269,12 +269,9 @@ void HelicopterControl::PreUpdate(const UpdateInfo &_info, EntityComponentManage
   }
 }
 
-IGNITION_ADD_PLUGIN(HelicopterControl,
+GZ_ADD_PLUGIN(HelicopterControl,
                     System,
                     HelicopterControl::ISystemConfigure,
                     HelicopterControl::ISystemPreUpdate)
 
-IGNITION_ADD_PLUGIN_ALIAS(HelicopterControl, "gz::sim::systems::HelicopterControl")
-
-// TODO: Deprecated, remove on version 8
-IGNITION_ADD_PLUGIN_ALIAS(HelicopterControl, "ignition::gazebo::systems::HelicopterControl")
+GZ_ADD_PLUGIN_ALIAS(HelicopterControl, "gz::sim::systems::HelicopterControl")

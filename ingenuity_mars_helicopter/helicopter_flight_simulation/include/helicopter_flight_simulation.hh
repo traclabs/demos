@@ -15,19 +15,17 @@
  *
  */
 
-#ifndef GZ_GAZEBO_SYSTEMS_LIFT_DRAG_HH_
-#define GZ_GAZEBO_SYSTEMS_LIFT_DRAG_HH_
+#pragma once
 
 #include <memory>
 #include <gz/sim/System.hh>
 
-namespace ignition
+namespace gz
 {
-    namespace gazebo
+    namespace sim
     {
-        // Inline bracket to help doxygen filtering.
-        inline namespace IGNITION_GAZEBO_VERSION_NAMESPACE
-        {
+        inline namespace GZ_SIM_VERSION_NAMESPACE
+        {    
             namespace systems
             {
                 // Forward declaration
@@ -97,5 +95,3 @@ namespace ignition
         }
     }
 }
-
-#endif

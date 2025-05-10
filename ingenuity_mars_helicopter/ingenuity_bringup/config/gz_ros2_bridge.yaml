@@ -13,29 +13,29 @@
 - ros_topic_name: "/wrench/blade_1"
   gz_topic_name: "/wrench/ingenuity_model/blade_1"
   ros_type_name: "geometry_msgs/msg/Wrench" 
-  gz_type_name: "ignition.msgs.Wrench"
+  gz_type_name: "gz.msgs.Wrench"
   direction: GZ_TO_ROS
 
 - ros_topic_name: "/wrench/blade_2"
   gz_topic_name: "/wrench/ingenuity_model/blade_2"
   ros_type_name: "geometry_msgs/msg/Wrench" 
-  gz_type_name: "ignition.msgs.Wrench"
+  gz_type_name: "gz.msgs.Wrench"
   direction: GZ_TO_ROS
 
 - ros_topic_name: "/wrench/blade_3"
   gz_topic_name: "/wrench/ingenuity_model/blade_3"
   ros_type_name: "geometry_msgs/msg/Wrench" 
-  gz_type_name: "ignition.msgs.Wrench"
+  gz_type_name: "gz.msgs.Wrench"
   direction: GZ_TO_ROS
 
 - ros_topic_name: "/wrench/blade_4"
   gz_topic_name: "/wrench/ingenuity_model/blade_4"
   ros_type_name: "geometry_msgs/msg/Wrench" 
-  gz_type_name: "ignition.msgs.Wrench"
+  gz_type_name: "gz.msgs.Wrench"
   direction: GZ_TO_ROS
 
 - ros_topic_name: "/camera"
   gz_topic_name: "/camera"
   ros_type_name: "sensor_msgs/msg/Image"
-  gz_type_name: "ignition.msgs.Image"
+  gz_type_name: "gz.msgs.Image"
   direction: GZ_TO_ROS

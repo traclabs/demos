@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.22)
 project(helicopter_flight_control)
 
 # Default to C11 for C and C++17 for C++
@@ -18,32 +18,27 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(ignition-gazebo6 REQUIRED) # Assuming using Ignition Fortress
+find_package(gz-sim8 REQUIRED)
 find_package(pluginlib REQUIRED)
 
-if("$ENV{IGNITION_VERSION}" STREQUAL "citadel")
-  find_package(ignition-gazebo3 REQUIRED)
-  set(IGN_GAZEBO_VER ${ignition-gazebo3_VERSION_MAJOR})
-  message(STATUS "Compiling against Ignition Citadel")
+#  find_package(ignition-gazebo6 REQUIRED)
+#  set(IGN_GAZEBO_VER ${ignition-gazebo6_VERSION_MAJOR})
+#  message(STATUS "Compiling against Ignition Fortress")
 
-elseif("$ENV{IGNITION_VERSION}" STREQUAL "edifice")
-  find_package(ignition-gazebo5 REQUIRED)
-  set(IGN_GAZEBO_VER ${ignition-gazebo5_VERSION_MAJOR})
-  message(STATUS "Compiling against Ignition Edifice")
+#find_package(ignition-plugin1 REQUIRED)
+#set(IGN_PLUGIN_VER ${ignition-plugin1_VERSION_MAJOR})
 
-elseif("$ENV{IGNITION_VERSION}" STREQUAL "fortress")
-  find_package(ignition-gazebo6 REQUIRED)
-  set(IGN_GAZEBO_VER ${ignition-gazebo6_VERSION_MAJOR})
-  message(STATUS "Compiling against Ignition Fortress")
+find_package(gz-cmake3 REQUIRED)
+set(GZ_CMAKE_VER ${gz-cmake3_VERSION_MAJOR})
 
-else()
-  find_package(ignition-gazebo6 REQUIRED)
-  set(IGN_GAZEBO_VER ${ignition-gazebo6_VERSION_MAJOR})
-  message(STATUS "Compiling against Ignition Fortress")
-endif()
+gz_find_package(gz-common5 REQUIRED)
+set(GZ_COMMON_VER ${gz-common5_VERSION_MAJOR})
 
-find_package(ignition-plugin1 REQUIRED)
-set(IGN_PLUGIN_VER ${ignition-plugin1_VERSION_MAJOR})
+gz_find_package(gz-rendering8 REQUIRED)
+set(GZ_RENDERING_VER ${gz-rendering8_VERSION_MAJOR})
+
+gz_find_package(gz-sim8 REQUIRED)
+set(GZ_SIM_VER ${gz-sim8_VERSION_MAJOR})
 
 # Include directories
 include_directories(include)
@@ -53,10 +48,10 @@ add_library(${PROJECT_NAME} SHARED
   src/helicopter_flight_control.cc
 )
 
-
 target_link_libraries(${PROJECT_NAME}
-  ignition-gazebo${IGN_GAZEBO_VER}::core
-  ignition-plugin${IGN_PLUGIN_VER}::register
+   gz-sim${GZ_SIM_VER}::gz-sim${GZ_SIM_VER}
+#  ignition-gazebo${IGN_GAZEBO_VER}::core
+#  ignition-plugin${IGN_PLUGIN_VER}::register
 )
 
 # Ament target dependencies
@@ -75,7 +70,8 @@ install(DIRECTORY include/
   DESTINATION include
 )
 
-pluginlib_export_plugin_description_file(helicopter_flight_control ign_hardware_plugins.xml)
+ament_environment_hooks("${CMAKE_CURRENT_SOURCE_DIR}/hooks/${PROJECT_NAME}.dsv.in")
+ament_environment_hooks("${CMAKE_CURRENT_SOURCE_DIR}/hooks/${PROJECT_NAME}.sh.in")
 
 
 # Install launch files and other directories if necessary

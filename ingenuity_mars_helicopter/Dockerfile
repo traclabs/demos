@@ -25,26 +25,25 @@ WORKDIR ${INGENUITY_DIR}
 
 RUN sudo apt-get update && \
     DEBIAN_FRONTEND=noninteractive sudo apt-get install -y --no-install-recommends \
-    ros-humble-hardware-interface \
-    ros-humble-generate-parameter-library \
-    ros-humble-xacro \
-    ros-humble-controller-interface \
-    ros-humble-realtime-tools \
-    ros-humble-ros2-control-test-assets \
-    ros-humble-controller-manager \
-    ros-humble-joint-state-publisher-gui \
-    ros-humble-control-msgs \
-    ros-humble-gazebo-ros \
-    ros-humble-control-toolbox \
-    ros-humble-ackermann-msgs \
-    ros-humble-ament-cmake \
-    ros-humble-ament-cmake-clang-format \
-    ros-humble-moveit \
-    ros-humble-joint-state-broadcaster \
-    libignition-gazebo6-dev \
-    ros-humble-joint-trajectory-controller \
-    ros-humble-ros-ign-gazebo \
-    ros-humble-ros-gz-bridge \
+    ros-jazzy-hardware-interface \
+    ros-jazzy-generate-parameter-library \
+    ros-jazzy-xacro \
+    ros-jazzy-controller-interface \
+    ros-jazzy-realtime-tools \
+    ros-jazzy-ros2-control-test-assets \
+    ros-jazzy-controller-manager \
+    ros-jazzy-joint-state-publisher-gui \
+    ros-jazzy-control-msgs \
+    ros-jazzy-gazebo-ros \
+    ros-jazzy-control-toolbox \
+    ros-jazzy-ackermann-msgs \
+    ros-jazzy-ament-cmake \
+    ros-jazzy-ament-cmake-clang-format \
+    ros-jazzy-moveit \
+    ros-jazzy-joint-state-broadcaster \
+    ros-jazzy-joint-trajectory-controller \
+    ros-jazzy-ros-gz-sim \
+    ros-jazzy-ros-gz-bridge \
     libeigen3-dev
 
 # Install the various build and test tools
@@ -89,7 +88,7 @@ RUN sudo chown -R ${USERNAME}:${USERNAME} ${INGENUITY_DIR}
 
 RUN export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && \
     source /home/spaceros-user/spaceros/install/setup.bash && \
-    source /opt/ros/humble/setup.bash && \
+    source /opt/ros/jazzy/setup.bash && \
     cd /home/spaceros-user/ingenuity_helicopter && \
     colcon build --packages-select helicopter_flight_control helicopter_flight_simulation ingenuity_description ingenuity_bringup
 

@@ -53,13 +53,13 @@ docker exec -it ingenuity_flight_simulator bash
 to view all the topics coming from the simulator do:
 
 ```bash
-ign topic -l
+gz topic -l
 ```
 
 As an example you can subscribe to the /imu topic published from the ingenuity's body.
 
 ```bash
-ign topic -et /imu
+gz topic -et /imu
 ```
 
 

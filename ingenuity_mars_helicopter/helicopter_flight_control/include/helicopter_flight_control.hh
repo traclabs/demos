@@ -23,7 +23,7 @@
 
 #include <gz/sim/System.hh>
 
-namespace ignition::gazebo::systems
+namespace gz::sim::systems
 {
     // Forward declaration of private data class
     class HelicopterControlPrivate;
@@ -40,9 +40,9 @@ namespace ignition::gazebo::systems
     ///
     /// `<link_name>` The name of the link to which the forces and torques are applied.
     ///
-    class HelicopterControl : public ignition::gazebo::System,
-                              public ignition::gazebo::ISystemConfigure,
-                              public ignition::gazebo::ISystemPreUpdate
+    class HelicopterControl : public gz::sim::System,
+                              public gz::sim::ISystemConfigure,
+                              public gz::sim::ISystemPreUpdate
     {
         /// \brief Constructor
     public:
@@ -54,21 +54,21 @@ namespace ignition::gazebo::systems
 
         // Documentation inherited
     public:
-        void Configure(const ignition::gazebo::Entity &_entity,
+        void Configure(const gz::sim::Entity &_entity,
                        const std::shared_ptr<const sdf::Element> &_sdf,
-                       ignition::gazebo::EntityComponentManager &_ecm,
-                       ignition::gazebo::EventManager &_eventMgr) override;
+                       gz::sim::EntityComponentManager &_ecm,
+                       gz::sim::EventManager &_eventMgr) override;
 
         // Documentation inherited
     public:
         void PreUpdate(
-            const ignition::gazebo::UpdateInfo &_info,
-            ignition::gazebo::EntityComponentManager &_ecm) override;
+            const gz::sim::UpdateInfo &_info,
+            gz::sim::EntityComponentManager &_ecm) override;
 
         /// \brief Private data pointer for PIMPL pattern
     private:
         std::unique_ptr<HelicopterControlPrivate> dataPtr;
     };
-} // namespace ignition::gazebo::systems
+} // namespace gz::sim::systems
 
 #endif // GZ_GAZEBO_SYSTEMS_HELICOPTERCONTROL_HH_

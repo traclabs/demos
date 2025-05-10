@@ -14,20 +14,20 @@ The following system plugins from Gazebo are used in the simulation:
 1. Martian Dust Storm:
    To start the Martian dust storm:
    ```bash
-   ign topic -t /model/dust_storm/link/dust_link/particle_emitter/emitter/cmd -m ignition.msgs.ParticleEmitter -p 'emitting: {data: true}'
+   gz topic -t /model/dust_storm/link/dust_link/particle_emitter/emitter/cmd -m gz.msgs.ParticleEmitter -p 'emitting: {data: true}'
    ```
 
 2. Get the Battery State:
 
     ```bash
-    ign topic -et /model/ingenuity_model/battery/ingenuity_battery/state
+    gz topic -et /model/ingenuity_model/battery/ingenuity_battery/state
     ```
 
 3. Command rotor angular velocity
 
     ```bash
-    ign topic -t "/model/ingenuity_model/joint/rod_1_joint/cmd_vel" -m ignition.msgs.Double -p "data: 2000.0"
-    ign topic -t "/model/ingenuity_model/joint/rod_2_joint/cmd_vel" -m ignition.msgs.Double -p "data: 2000.0"
+    gz topic -t "/model/ingenuity_model/joint/rod_1_joint/cmd_vel" -m gz.msgs.Double -p "data: 2000.0"
+    gz topic -t "/model/ingenuity_model/joint/rod_2_joint/cmd_vel" -m gz.msgs.Double -p "data: 2000.0"
     ```
 
 4. Wind
@@ -49,7 +49,7 @@ The RGB camera simulates Ingenuity's downward-facing camera, used for navigation
 
 ### Accessing Camera Data:
 ```bash
-ign topic -et /camera
+gz topic -et /camera
 ```
 
 This command will stream the camera images. Each message includes the image data, timestamp, and other metadata.
@@ -64,7 +64,7 @@ The altimeter sensor provides altitude measurements, crucial for Ingenuity's ver
 
 ### Accessing Altimeter Data:
 ```bash
-ign topic -et /altimeter
+gz topic -et /altimeter
 ```
 
 This command will stream altimeter data, including vertical position and velocity.
@@ -79,7 +79,7 @@ The IMU provides data about the helicopter's orientation and acceleration.
 
 ### Accessing IMU Data:
 ```bash
-ign topic -et /imu
+gz topic -et /imu
 ```
 
 This command will stream IMU data, including linear acceleration and angular velocity vectors.
@@ -89,7 +89,7 @@ This command will stream IMU data, including linear acceleration and angular vel
 ### Battery State:
 To monitor the battery state of the Ingenuity model:
 ```bash
-ign topic -et /model/ingenuity_model/battery/ingenuity_battery/state
+gz topic -et /model/ingenuity_model/battery/ingenuity_battery/state
 ```
 
 This provides information about the current charge level, voltage, and other battery parameters.
@@ -97,7 +97,7 @@ This provides information about the current charge level, voltage, and other bat
 ### Joint States:
 To view the joint states of the Ingenuity model:
 ```bash
-ign topic -et /world/ingenuity_world/model/ingenuity_model/joint_state
+gz topic -et /world/ingenuity_world/model/ingenuity_model/joint_state
 ```
 
 This gives information about the position and velocity of the model's joints, including the rotor joints.
@@ -105,7 +105,7 @@ This gives information about the position and velocity of the model's joints, in
 ### Model Pose:
 To get the current pose of the Ingenuity model:
 ```bash
-ign topic -et /model/ingenuity_model/pose
+gz topic -et /model/ingenuity_model/pose
 ```
 
 This provides the position and orientation of the Ingenuity model in the world frame.

@@ -2,35 +2,35 @@
 <!--
   Try sending commands:
 
-    ign topic -t "/model/ingenuity_model/joint/rod_1_joint/cmd_vel" -m ignition.msgs.Double -p "data: 2000.0"
-    ign topic -t "/model/ingenuity_model/joint/rod_2_joint/cmd_vel" -m ignition.msgs.Double -p "data: 2000.0"
+    gz topic -t "/model/ingenuity_model/joint/rod_1_joint/cmd_vel" -m gz.msgs.Double -p "data: 2000.0"
+    gz topic -t "/model/ingenuity_model/joint/rod_2_joint/cmd_vel" -m gz.msgs.Double -p "data: 2000.0"
   
   Get the battery state
 
-    ign topic -et /model/ingenuity_model/battery/ingenuity_battery/state
+    gz topic -et /model/ingenuity_model/battery/ingenuity_battery/state
 
   Start dust storm
 
-    ign topic -t /model/dust_storm/link/dust_link/particle_emitter/emitter/cmd -m ignition.msgs.ParticleEmitter -p 'emitting: {data: true}'
+    gz topic -t /model/dust_storm/link/dust_link/particle_emitter/emitter/cmd -m ignition.msgs.ParticleEmitter -p 'emitting: {data: true}'
   
   Listen to joint states:
 
-    ign topic -e -t /world/ingenuity_world/model/ingenuity_model/joint_state
+    gz topic -e -t /world/ingenuity_world/model/ingenuity_model/joint_state
 
   Publish the desired altitude:
-    ign topic -t /desired_altitude -m ignition.msgs.Double -p "data: 25.0"
+    gz topic -t /desired_altitude -m gz.msgs.Double -p "data: 25.0"
 
   Publish the angle of attack collective control:
     between -0.0349066 and 0.139626 radians(2 to 8 degrees)
-    ign topic -t /angle_of_attack -m ignition.msgs.Double -p "data: 0.1"
+    gz topic -t /angle_of_attack -m gz.msgs.Double -p "data: 0.1"
 
   Publish the lateral cyclic control:
     between -0.00001 to 0.00001
-    ign topic -t /alpha_c -m ignition.msgs.Double -p "data: 0.00001"
+    gz topic -t /alpha_c -m gz.msgs.Double -p "data: 0.00001"
 
   Publish the longitudinal cyclic control:
     between -0.00001 to 0.00001
-    ign topic -t /alpha_s -m ignition.msgs.Double -p "data: 0.00001"
+    gz topic -t /alpha_s -m gz.msgs.Double -p "data: 0.00001"
 
 -->
 
@@ -44,33 +44,33 @@
     </wind>
 
     <plugin
-      filename="ignition-gazebo-physics-system"
+      filename="gz-sim-physics-system"
       name="gz::sim::systems::Physics">
     </plugin>
     <plugin
-      filename="ignition-gazebo-sensors-system"
+      filename="gz-sim-sensors-system"
       name="gz::sim::systems::Sensors">
       <render_engine>ogre2</render_engine>
     </plugin>
     <plugin
-      filename="ignition-gazebo-user-commands-system"
+      filename="gz-sim-user-commands-system"
       name="gz::sim::systems::UserCommands">
     </plugin>
     <plugin
-      filename="ignition-gazebo-scene-broadcaster-system"
+      filename="gz-sim-scene-broadcaster-system"
       name="gz::sim::systems::SceneBroadcaster">
     </plugin>
     <plugin
-      filename="ignition-gazebo-imu-system"
+      filename="gz-sim-imu-system"
       name="ignition::gazebo::systems::Imu">
     </plugin>
     <plugin
-      filename="ignition-gazebo-altimeter-system"
+      filename="gz-sim-altimeter-system"
       name="gz::sim::systems::Altimeter">
     </plugin>
     <plugin
-      filename="ignition-gazebo-particle-emitter2-system"
-      name="ignition::gazebo::systems::ParticleEmitter2">
+      filename="gz-sim-particle-emitter2-system"
+      name="gz::sim::systems::ParticleEmitter2">
     </plugin>
 
 
@@ -710,7 +710,7 @@
       <link_name>body</link_name>
     </plugin>
 
-    <plugin filename="ignition-gazebo-linearbatteryplugin-system"
+    <plugin filename="gz-sim-linearbatteryplugin-system"
       name="gz::sim::systems::LinearBatteryPlugin">
       <battery_name>ingenuity_battery</battery_name>
       <voltage>4.2</voltage>
