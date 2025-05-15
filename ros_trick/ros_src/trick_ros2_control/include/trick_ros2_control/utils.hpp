@@ -44,7 +44,7 @@ std::vector<double> trick_response_convert(std::string& response)
   {
     return result;
   }
-  for (int i = 1; i < responseSplit.size(); i++)
+  for (size_t i = 1; i < responseSplit.size(); i++)
   {
     result.push_back(trick_string_convert(responseSplit[i]));
   }

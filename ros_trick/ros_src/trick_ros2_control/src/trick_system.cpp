@@ -240,7 +240,7 @@ hardware_interface::return_type TrickSystem::read(const rclcpp::Time& /*time*/, 
                  trick_state_variables_.size(), raw_doubles_from_trick.size());
     return hardware_interface::return_type::OK;
   }
-  for (int i = 0; i < raw_doubles_from_trick.size(); ++i)
+  for (size_t i = 0; i < raw_doubles_from_trick.size(); ++i)
   {
     double value_from_trick = raw_doubles_from_trick[i];
     double* const target_state_variable_ptr_ = trick_state_variables_[i].data_ptr;
