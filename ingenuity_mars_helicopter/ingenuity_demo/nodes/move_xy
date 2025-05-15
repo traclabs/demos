@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+"""Move Ingenuity in the XY plane (not accurate, just for debugging purposes)."""
+
+import rclpy  # type: ignore
+from rclpy.node import Node  # type: ignore
+from builtin_interfaces.msg import Duration  # type: ignore
+
+from std_msgs.msg import Float64  # type: ignore
+from std_srvs.srv import Empty  # type: ignore
+
+
+class MoveXY(Node):
+    """Move XY."""
+
+    def __init__(self):
+        super().__init__("ingenuity_xy_node")
+        self.alpha_s_publisher_ = self.create_publisher(
+            Float64, "/alpha_s", 10
+        )
+        self.alpha_c_publisher_ = self.create_publisher(
+            Float64, "/alpha_c", 10
+        )
+
+        self.move_front_srv = self.create_service(Empty, "helicopter_front", self.helicopter_front_callback)
+        self.move_back_srv = self.create_service(Empty, "helicopter_back", self.helicopter_back_callback)
+        self.move_left_srv = self.create_service(Empty, "helicopter_left", self.helicopter_left_callback)
+        self.move_right_srv = self.create_service(Empty, "helicopter_right", self.helicopter_right_callback)
+        self.move_stop_srv = self.create_service(Empty, "helicopter_stop", self.helicopter_back_callback)
+
+    def helicopter_front_callback(self, request, response):  # pylint: disable=unused-argument
+        """Move ingenuity in XY plane"""
+        msg_s = Float64()
+        msg_s.data = -0.0000025
+
+        msg_c = Float64()
+        msg_c.data = 0.0
+
+        self.alpha_s_publisher_.publish(msg_s)
+        self.alpha_c_publisher_.publish(msg_c)
+        
+        return response
+
+    def helicopter_back_callback(self, request, response):  # pylint: disable=unused-argument
+        """Move ingenuity in XY plane"""
+        msg_s = Float64()
+        msg_s.data = 0.0000025
+
+        msg_c = Float64()
+        msg_c.data = 0.0
+
+        self.alpha_s_publisher_.publish(msg_s)
+        self.alpha_c_publisher_.publish(msg_c)
+        
+        return response
+
+
+    def helicopter_left_callback(self, request, response):  # pylint: disable=unused-argument
+        """Move ingenuity in XY plane"""
+        msg_s = Float64()
+        msg_s.data = 0.0
+
+        msg_c = Float64()
+        msg_c.data = 0.0000025
+
+        self.alpha_s_publisher_.publish(msg_s)
+        self.alpha_c_publisher_.publish(msg_c)
+        
+        return response
+
+    def helicopter_right_callback(self, request, response):  # pylint: disable=unused-argument
+        """Move ingenuity in XY plane"""
+        msg_s = Float64()
+        msg_s.data = 0.0
+
+        msg_c = Float64()
+        msg_c.data = -0.0000025
+
+        self.alpha_s_publisher_.publish(msg_s)
+        self.alpha_c_publisher_.publish(msg_c)
+        
+        return response
+
+
+    def helicopter_stop_callback(self, request, response):  # pylint: disable=unused-argument
+        """Move ingenuity in XY plane"""
+        msg_s = Float64()
+        msg_s.data = 0.0
+
+        msg_c = Float64()
+        msg_c.data = 0.0
+
+        self.alpha_s_publisher_.publish(msg_s)
+        self.alpha_c_publisher_.publish(msg_c)
+        
+        return response
+
+
+def main(args=None):
+    """Main function"""
+    rclpy.init(args=args)
+
+    xy_node = MoveXY()
+
+    rclpy.spin(xy_node)
+    # Destroy the node explicitly
+    # (optional - otherwise it will be done automatically
+    # when the garbage collector destroys the node object)
+    xy_node.destroy_node()
+    rclpy.shutdown()
+
+
+if __name__ == "__main__":
+    main()

@@ -1,98 +1,29 @@
-# Copyright 2021 Open Source Robotics Foundation, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+FROM osrf/space-ros:jazzy-2025.01.0
 
-FROM osrf/space-ros:latest
+ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+ENV ROS_DISTRO=jazzy
+ENV HOME=/home/spaceros-user
 
-# Set Bash as the default shell
-SHELL ["/bin/bash", "-c"]
+# Install dependencies
+# Related to space-ros/space-ros#195
+RUN sudo apt update && \
+    sudo apt install -y \
+      ros-${ROS_DISTRO}-control-msgs \
+      ros-${ROS_DISTRO}-ros-gz-bridge \
+      ros-${ROS_DISTRO}-rmw-cyclonedds-cpp
 
-# Disable prompting during package installation
-ARG DEBIAN_FRONTEND=noninteractive
+# Prepare the workspace
+SHELL ["bash", "-c"]
+RUN mkdir -p ${HOME}/ingenuity_ws/src
+WORKDIR ${HOME}/ingenuity_ws
 
-ENV INGENUITY_DIR=${HOME_DIR}/ingenuity_helicopter
-WORKDIR ${INGENUITY_DIR}
+COPY ./ingenuity_demo src/ingenuity_demo
+COPY .defaults.yaml .defaults.yaml
 
-RUN sudo apt-get update && \
-    DEBIAN_FRONTEND=noninteractive sudo apt-get install -y --no-install-recommends \
-    ros-jazzy-hardware-interface \
-    ros-jazzy-generate-parameter-library \
-    ros-jazzy-xacro \
-    ros-jazzy-controller-interface \
-    ros-jazzy-realtime-tools \
-    ros-jazzy-ros2-control-test-assets \
-    ros-jazzy-controller-manager \
-    ros-jazzy-joint-state-publisher-gui \
-    ros-jazzy-control-msgs \
-    ros-jazzy-gazebo-ros \
-    ros-jazzy-control-toolbox \
-    ros-jazzy-ackermann-msgs \
-    ros-jazzy-ament-cmake \
-    ros-jazzy-ament-cmake-clang-format \
-    ros-jazzy-moveit \
-    ros-jazzy-joint-state-broadcaster \
-    ros-jazzy-joint-trajectory-controller \
-    ros-jazzy-ros-gz-sim \
-    ros-jazzy-ros-gz-bridge \
-    libeigen3-dev
+# Build the workspace
+RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
+    && source "${SPACEROS_DIR}"/install/setup.bash \
+    && colcon build --symlink-install
 
-# Install the various build and test tools
-RUN sudo apt install -y \
-  build-essential \
-  clang-format \
-  cmake \
-  git \
-  libbullet-dev \
-  python3-colcon-common-extensions \
-  python3-flake8 \
-  python3-pip \
-  python3-pytest-cov \
-  python3-rosdep \
-  python3-setuptools \
-  python3-vcstool \
-  wget
-
-# Install some pip packages needed for testing
-RUN python3 -m pip install -U \
-  argcomplete \
-  flake8-blind-except \
-  flake8-builtins \
-  flake8-class-newline \
-  flake8-comprehensions \
-  flake8-deprecated \
-  flake8-docstrings \
-  flake8-import-order \
-  flake8-quotes \
-  pytest-repeat \
-  pytest-rerunfailures \
-  pytest
-
-COPY ingenuity_mars_helicopter ${INGENUITY_DIR}/src/ingenuity_mars_helicopter
-COPY helicopter_flight_control ${INGENUITY_DIR}/src/helicopter_flight_control
-COPY helicopter_flight_simulation ${INGENUITY_DIR}/src/helicopter_flight_simulation
-COPY ingenuity_bringup ${INGENUITY_DIR}/src/ingenuity_bringup
-COPY ingenuity_description ${INGENUITY_DIR}/src/ingenuity_description
-COPY ./entrypoint.sh ${INGENUITY_DIR}/entrypoint.sh
-
-RUN sudo chown -R ${USERNAME}:${USERNAME} ${INGENUITY_DIR}
-
-RUN export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp && \
-    source /home/spaceros-user/spaceros/install/setup.bash && \
-    source /opt/ros/jazzy/setup.bash && \
-    cd /home/spaceros-user/ingenuity_helicopter && \
-    colcon build --packages-select helicopter_flight_control helicopter_flight_simulation ingenuity_description ingenuity_bringup
-
-
-RUN sudo chmod +x ${INGENUITY_DIR}/entrypoint.sh
-
-ENTRYPOINT ["/home/spaceros-user/ingenuity_helicopter/entrypoint.sh"]
+# Source the workspace
+RUN echo "source ${HOME}/ingenuity_ws/install/setup.bash" >> ${HOME}/.bashrc

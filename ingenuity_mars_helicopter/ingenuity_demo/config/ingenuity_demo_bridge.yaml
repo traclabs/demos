@@ -1,0 +1,53 @@
+
+- ros_topic_name: "/ingenuity_battery/state"
+  gz_topic_name: "/model/ingenuity_model/battery/ingenuity_battery/state"
+  ros_type_name: "sensor_msgs/msg/BatteryState"
+  gz_type_name: "gz.msgs.BatteryState" 
+  direction: GZ_TO_ROS
+
+# Publish the desired altitude:
+# e.g. 10-25 m
+- ros_topic_name: "/desired_altitude"
+  gz_topic_name: "/desired_altitude"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double" 
+  direction: ROS_TO_GZ
+
+#  Publish the angle of attack collective control:
+#  between -0.0349066 and 0.139626 radians(2 to 8 degrees)  
+- ros_topic_name: "/angle_of_attack"
+  gz_topic_name: "/angle_of_attack"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+  
+# Publish the lateral cyclic control:
+# between -0.00001 to 0.00001  
+- ros_topic_name: "/alpha_c"
+  gz_topic_name: "/alpha_c"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+  
+
+# Publish the longitudinal cyclic control:
+# between -0.00001 to 0.00001
+- ros_topic_name: "/alpha_s"
+  gz_topic_name: "/alpha_s"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+  
+
+# Example: 2000.0
+- ros_topic_name: "/rod_1_joint/cmd_vel"
+  gz_topic_name: "/model/ingenuity_model/joint/rod_1_joint/cmd_vel"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ
+  
+- ros_topic_name: "/rod_2_joint/cmd_vel"
+  gz_topic_name: "/model/ingenuity_model/joint/rod_2_joint/cmd_vel"
+  ros_type_name: "std_msgs/msg/Float64"
+  gz_type_name: "gz.msgs.Double"
+  direction: ROS_TO_GZ

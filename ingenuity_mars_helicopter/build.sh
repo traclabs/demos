@@ -1,7 +1,5 @@
-# !/usr/bin/env bash
+#!/bin/bash
 
+set -e
 
-docker build -t ingenuity_flight_simulator .
-
-echo ""
-echo "##### Done! #####"
+docker compose build
