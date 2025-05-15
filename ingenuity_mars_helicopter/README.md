@@ -12,59 +12,50 @@ Aim of this project is to develop tools to mimic the Martian environment as clos
 
 Each folder is a ROS 2 package. Each package has their own README.md file explaining the APIs and usage examples.
 
-## Prerequisites
+### Installation
 
-- Docker
-- NVIDIA GPU (optional, but recommended for better performance)
+To start the demo, there are few dependencies that need to be installed. The following steps will guide you through the installation process.
 
-## Setup
+1. You will need docker installed on your system. If not, you can follow the instructions [here](https://docs.docker.com/get-docker/).
 
-1. Clone this repository:
-   ```bash
-   git clone git@github.com:BarisYazici/demos.git
-   git checkout feat/ingenuity-helicopter-simulation
+### How to run the demo
 
-   ```
+1. Clone the demo repository
+    ```bash
+    git clone https://github.com/space-ros/demos.git
+    ```
+2. cd into the `ingenuity_mars_helicopter` directory
+    ```bash
+    cd ingenuity_mars_helicopter
+    ```
+3. To build the demo, you can use the following command.
+    ```bash
+    # To build the demos for the ingenuity_mars_helicopter
+    ./build.sh
+    ```
+4. To run the demo, you can use the following command.
+    ```bash
+    # To run the demos for the ingenuity_mars_helicopter
+    ./run.sh
+    ```
 
-2. Build the Ingenuity Flight Simulator image:
-   ```bash
-   cd ingenuity_flight_simulator
-   ./build.sh
-   ```
+This will start the demo in one terminal and gazebo in another terminal. By default, the Ingenuity's flight controller is activated and hovers the Martian helicopter to 10 meters of altitude. To control Ingenuity, we provide ros2 services for the demo. You can control it using the following services.
 
-## Running the Simulation
+1. Control the altitude, go up:
 
-First run the following to allow GUI passthrough:
-```bash
-xhost +local:docker
-```
+    ```bash
+    # To move the helicopter up
+    ros2 service call /helicopter_up std_srvs/srv/Empty {}
 
-To start the simulation, run:
-```bash
-./run.sh
-```
+    ```
+    
+2. Control the altitude, go down:
 
-while the simulation is running in another terminal:
+    ```bash
+    # To move the helicopter down
+    ros2 service call /helicopter_down std_srvs/srv/Empty {}
 
-```bash
-docker exec -it ingenuity_flight_simulator bash
-```
-
-to view all the topics coming from the simulator do:
-
-```bash
-gz topic -l
-```
-
-As an example you can subscribe to the /imu topic published from the ingenuity's body.
-
-```bash
-gz topic -et /imu
-```
-
-
-This will launch the Gazebo simulation with the Ingenuity model. Gazebo simulation GUI and RViz will pop up in new windows. By default, the Ingenuity's flight controller is activated and hovers the Martian helicopter to 10 meters of altitude.
-
+    ```
 
 ## Contribution to Simulation and Control of Ingenuity
 
