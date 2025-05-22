@@ -43,7 +43,7 @@ gz topic -t /desired_altitude -m gz.msgs.Double -p "data: 25.0"
 
 ```xml
 
-<model name="ingenuity_model">
+<model name="ingenuity">
   <!-- Other model elements... -->
 
   <plugin name="gz::sim::systems::HelicopterControl" filename="helicopter_flight_control">

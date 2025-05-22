@@ -95,7 +95,7 @@ These commands allow you to adjust the cyclic control of Ingenuity, enabling mor
 
 ```xml
 
-<model name="ingenuity_model">
+<model name="ingenuity">
   <!-- Other model elements... -->
 
   <plugin

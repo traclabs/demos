@@ -20,14 +20,14 @@ The following system plugins from Gazebo are used in the simulation:
 2. Get the Battery State:
 
     ```bash
-    gz topic -et /model/ingenuity_model/battery/ingenuity_battery/state
+    gz topic -et /model/ingenuity/battery/ingenuity_battery/state
     ```
 
 3. Command rotor angular velocity
 
     ```bash
-    gz topic -t "/model/ingenuity_model/joint/rod_1_joint/cmd_vel" -m gz.msgs.Double -p "data: 2000.0"
-    gz topic -t "/model/ingenuity_model/joint/rod_2_joint/cmd_vel" -m gz.msgs.Double -p "data: 2000.0"
+    gz topic -t "/model/ingenuity/joint/rod_1_joint/cmd_vel" -m gz.msgs.Double -p "data: 2000.0"
+    gz topic -t "/model/ingenuity/joint/rod_2_joint/cmd_vel" -m gz.msgs.Double -p "data: 2000.0"
     ```
 
 4. Wind
@@ -89,7 +89,7 @@ This command will stream IMU data, including linear acceleration and angular vel
 ### Battery State:
 To monitor the battery state of the Ingenuity model:
 ```bash
-gz topic -et /model/ingenuity_model/battery/ingenuity_battery/state
+gz topic -et /model/ingenuity/battery/ingenuity_battery/state
 ```
 
 This provides information about the current charge level, voltage, and other battery parameters.
@@ -97,7 +97,7 @@ This provides information about the current charge level, voltage, and other bat
 ### Joint States:
 To view the joint states of the Ingenuity model:
 ```bash
-gz topic -et /world/ingenuity_world/model/ingenuity_model/joint_state
+gz topic -et /world/ingenuity_world/model/ingenuity/joint_state
 ```
 
 This gives information about the position and velocity of the model's joints, including the rotor joints.
@@ -105,7 +105,7 @@ This gives information about the position and velocity of the model's joints, in
 ### Model Pose:
 To get the current pose of the Ingenuity model:
 ```bash
-gz topic -et /model/ingenuity_model/pose
+gz topic -et /model/ingenuity/pose
 ```
 
 This provides the position and orientation of the Ingenuity model in the world frame.

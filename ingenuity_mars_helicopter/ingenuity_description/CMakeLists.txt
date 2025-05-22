@@ -20,11 +20,10 @@ find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 
 install(DIRECTORY
-  meshes
   rviz
   urdf
   sdf
-  world
+  models
   DESTINATION share/${PROJECT_NAME}/
 )
 

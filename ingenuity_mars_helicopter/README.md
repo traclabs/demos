@@ -133,10 +133,10 @@ The following table explains the key topics used in the Ingenuity Flight Simulat
 | `/imu` | Provides IMU sensor data from the Ingenuity model | `gz.msgs.IMU` | Output from Simulation |
 | `/altimeter` | Provides altitude data from the Ingenuity model | `gz.msgs.Altimeter` | Output from Simulation |
 | `/camera` | Provides camera feed from the Ingenuity model | `gz.msgs.Image` | Output from Simulation |
-| `/wrench/ingenuity_model/blade_1` | Forces and torques applied to blade 1 | `gz.msgs.Wrench` | Output from Simulation |
-| `/wrench/ingenuity_model/blade_2` | Forces and torques applied to blade 2 | `gz.msgs.Wrench` | Output from Simulation |
-| `/wrench/ingenuity_model/blade_3` | Forces and torques applied to blade 3 | `gz.msgs.Wrench` | Output from Simulation |
-| `/wrench/ingenuity_model/blade_4` | Forces and torques applied to blade 4 | `gz.msgs.Wrench` | Output from Simulation |
+| `/wrench/ingenuity/blade_1` | Forces and torques applied to blade 1 | `gz.msgs.Wrench` | Output from Simulation |
+| `/wrench/ingenuity/blade_2` | Forces and torques applied to blade 2 | `gz.msgs.Wrench` | Output from Simulation |
+| `/wrench/ingenuity/blade_3` | Forces and torques applied to blade 3 | `gz.msgs.Wrench` | Output from Simulation |
+| `/wrench/ingenuity/blade_4` | Forces and torques applied to blade 4 | `gz.msgs.Wrench` | Output from Simulation |
 
 
 ## License
