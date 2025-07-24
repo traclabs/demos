@@ -4,6 +4,9 @@ ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 ENV ROS_DISTRO=jazzy
 ENV HOME=/home/spaceros-user
 
+# Update the ROS package keys
+ADD --chmod=644 https://raw.githubusercontent.com/ros/rosdistro/master/ros.key /usr/share/keyrings/ros-archive-keyring.gpg
+
 # Install dependencies
 # Related to space-ros/space-ros#195 and space-ros/space-ros#196
 RUN sudo apt update && sudo apt install -y ros-${ROS_DISTRO}-control-msgs \
