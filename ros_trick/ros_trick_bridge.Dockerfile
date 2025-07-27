@@ -14,6 +14,9 @@
 
 FROM osrf/space-ros:humble-2024.10.0
 
+# Update the ROS package keys
+ADD --chmod=644 https://raw.githubusercontent.com/ros/rosdistro/master/ros.key /usr/share/keyrings/ros-archive-keyring.gpg
+
 # Install trick dependencies.
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \

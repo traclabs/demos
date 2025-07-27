@@ -17,6 +17,9 @@
 # Git tag: humble-2024.10.0.
 FROM openrobotics/space_robots_demo:latest
 
+# Update the ROS package keys
+ADD --chmod=644 https://raw.githubusercontent.com/ros/rosdistro/master/ros.key /usr/share/keyrings/ros-archive-keyring.gpg
+
 # Rviz does not work inside the newest space_robots_demo, so we have to upgrade
 # the following packages. These packages are already present in the base image
 # and here we are upgrading them to latest versions.
