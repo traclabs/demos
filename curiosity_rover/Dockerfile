@@ -9,8 +9,10 @@ ADD --chmod=644 https://raw.githubusercontent.com/ros/rosdistro/master/ros.key /
 
 # Install dependencies
 # Related to space-ros/space-ros#195
-RUN sudo apt update && sudo apt install -y ros-${ROS_DISTRO}-control-msgs \
-    ros-${ROS_DISTRO}-rmw-cyclonedds-cpp
+RUN sudo apt update && \
+    sudo apt install -y \
+      ros-${ROS_DISTRO}-control-msgs \
+      ros-${ROS_DISTRO}-rmw-cyclonedds-cpp
 
 # Prepare the workspace
 SHELL ["bash", "-c"]
