@@ -64,7 +64,7 @@ RUN mkdir ${HOME}/ros_trick_bridge_ws
 WORKDIR ${HOME}/ros_trick_bridge_ws
 ENV ROS_TRICK_BRIDGE_WS="${HOME}/ros_trick_bridge_ws/"
 COPY --chown=spaceros-user:spaceros-user ros_src/ros_trick_bridge src/
-RUN /bin/bash -c 'source ${SPACEROS_DIR}/install/setup.bash \
+RUN /bin/bash -c 'source ${SPACEROS_DIR}/setup.bash \
   && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --event-handlers desktop_notification- status-'
 RUN rm -rf build log src
 
