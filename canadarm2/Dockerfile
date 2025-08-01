@@ -23,8 +23,7 @@ COPY ./canadarm_demo src/canadarm_demo
 COPY .defaults.yaml .defaults.yaml
 
 # Build the workspace
-RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
-    && source "${SPACEROS_DIR}"/install/setup.bash \
+RUN source "${SPACEROS_DIR}"/setup.bash \
     && colcon build
 
 # Source the workspace

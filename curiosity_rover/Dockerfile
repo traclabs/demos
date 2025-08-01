@@ -24,7 +24,7 @@ COPY .defaults.yaml .defaults.yaml
 
 # Build the workspace
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
-    && source "${SPACEROS_DIR}"/install/setup.bash \
+    && source "${SPACEROS_DIR}"/setup.bash \
     && colcon build --symlink-install
 
 # Source the workspace
