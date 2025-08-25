@@ -24,7 +24,7 @@ double trick_string_convert(const std::string& str)
   return num;
 }
 
-std::vector<std::string> trick_split_response(std::string& str, const char delim)
+std::vector<std::string> trick_split_response(std::string& str, const char /*delim*/)
 {
   std::stringstream ss(str);
   std::string s;
@@ -44,7 +44,7 @@ std::vector<double> trick_response_convert(std::string& response)
   {
     return result;
   }
-  for (int i = 1; i < responseSplit.size(); i++)
+  for (size_t i = 1; i < responseSplit.size(); i++)
   {
     result.push_back(trick_string_convert(responseSplit[i]));
   }
