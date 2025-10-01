@@ -1,26 +1,22 @@
-# Space ROS Space Robots Demo Docker Image
+# Space Robots Demo Docker Image
 
-The Space ROS Space Robots Demo docker image uses the moveit2 docker image (*osrf/space-ros-moveit2:latest*) as its base image.
-Build instructions for that image can be found in [this README](../moveit2/README.md).
-The Dockerfile installs all of the prerequisite system dependencies along with the demos source code, then builds the Space ROS Space Robots Demo.
+This folder contains the Dockerfile and scripts required to build the Curiosity Mars rover and Canadarm demos into an image called `space_robots_demo`.
 
-This is for Curiosity Mars rover and Canadarm demos.
+The Dockerfile installs all of the prerequisite system dependencies along with the demos source code, then builds the demo code.
 
-## Building the Demo Docker
+The image uses [osrf/space-ros-moveit2:latest](https://hub.docker.com/r/osrf/space-ros-moveit2/tags) as its base image.
 
-The demo image builds on top of the `spaceros` and `moveit2` images.
-To build the docker image, first ensure the `spaceros` base image is available either by [building it locally](https://github.com/space-ros/space-ros) or pulling it.
+**Note:** This demo was moved from the [space-ros/docker](https:/github.com/space-ros/docker) repository. For history prior to the move, search that repo.
 
-Then build the `moveit2` and the `space_robots` demo images:
+## Building the Demo Image
 
-```bash
-cd ../moveit2
-./build.sh
-cd ../space_robots
+Use the build script provided to build the docker image.
+
+```
 ./build.sh
 ```
 
-## Running the Demo Docker
+## Running the image container
 
 Run the following to allow GUI passthrough:
 
@@ -38,86 +34,52 @@ Then run:
 
 ### Curiosity Mars rover demo
 
-Launch the demo:
+1. Launch the demo in Gazebo:
 
 ```bash
-ros2 launch curiosity_rover_demo mars_rover.launch.py
+ros2 launch curiosity_gazebo curiosity_gazebo.launch.py
 ```
 
 On the top left corner, click on the refresh button to show camera feed.
 
-### Perform Tasks
-
-#### Setup
-
+2. Launch the ROS 2 control nodes
 Open a new terminal and attach to the currently running container:
 
 ```bash
-docker exec -it <container-name> bash
+docker exec -it openrobotics_space_robots_demo bash
+```
+Within the container, launch the control nodes:
+```
+ros2 launch curiosity_rover_demo mars_rover.launch.py
 ```
 
-Make sure packages are sourced:
+3. Send commands to the rover
+Open a new terminal and attach to the currently running container:
 
 ```bash
-source ${SPACEROS_DIR}/setup.bash
+docker exec -it openrobotics_space_robots_demo bash
 ```
-
-```bash
-source ~/demos_ws/install/setup.bash
-```
-
-#### Available Commands
-
-Drive the rover forward
-
-```bash
-ros2 service call /move_forward std_srvs/srv/Empty
-```
-
-Stop the rover
-
-```bash
-ros2 service call /move_stop std_srvs/srv/Empty
-```
-
-Turn left
-
-```bash
-ros2 service call /turn_left std_srvs/srv/Empty
-```
-
-Turn right
-
-```bash
-ros2 service call /turn_right std_srvs/srv/Empty
-```
-
-Open the tool arm:
-
-```bash
-ros2 service call /open_arm std_srvs/srv/Empty
-```
-
-Close the tool arm:
-
-```bash
-ros2 service call /close_arm std_srvs/srv/Empty
-```
-
-Open the mast (camera arm)
-
-```bash
-ros2 service call /mast_open std_srvs/srv/Empty
-```
-
-Close the mast (camera arm)
-
-```bash
-ros2 service call /mast_close std_srvs/srv/Empty
-```
+Within the container, you can now move the rover using the commands in [demos/curiosity_rover/README.md](../curiosity_rover/README.md)
 
 #### Canadarm demo
+Run the demo container as shown above:
+```bash
+./run.sh
+```
+
+1. Launch the canadarm demo in Gazebo
+```bash
+ros2 launch canadarm_gazebo canadarm.launch.py
+```
+2. Launch the ROS 2 control node
+Open a new terminal and attach to the currently running container:
 
 ```bash
-ros2 launch canadarm canadarm.launch.py
+docker exec -it openrobotics_space_robots_demo bash
 ```
+Within the container, launch the control node:
+
+```bash
+ros2 launch canadarm_demo canadarm.launch.py
+```
+Within the container, you can now move the arm using the commands in [demos/canadarm2/README.md](../canadarm2/README.md)
