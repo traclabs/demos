@@ -28,6 +28,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     flex \
     g++ \
     git \
+    libboost-all-dev \
     libclang-dev \
     libgtest-dev \
     libmotif-common \
