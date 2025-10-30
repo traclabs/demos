@@ -35,10 +35,10 @@ At /path/to/demos/racs2_demos_on_spaceros, run:
 The above command launch racs2 bridge node.
 
 ### Running cFS bridge app & run_app app
-Open a new terminal (calling Terminal 1) and attach to the currently running container:
+Open a new terminal (calling Terminal 1) and attach to the currently running service:
 
 ```bash
-docker exec -it racs2_demos_on_spaceros-racs2_demo-1 bash
+docker compose exec -it racs2_demo bash
 cd ~/racs2_ws
 cd cfs/build/exe/cpu1/
 ./core-cpu1

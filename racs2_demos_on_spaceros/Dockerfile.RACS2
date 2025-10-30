@@ -91,15 +91,20 @@ RUN cp -pr ${RACS2_DEMO_DIR}/racs2_bridge/Example/Case.1/ROS2/racs2_msg src/
 #RUN /bin/bash -c 'source /opt/ros/jazzy/setup.bash && \
 #    colcon build --packages-select \
 #    curiosity_rover_demo racs2_msg bridge_py_s'
+ARG RACS2_EXTRA_CXX_FLAGS="-Wno-unused-parameter -Wno-sign-compare -Wno-missing-field-initializers -Wno-reorder"
+ENV RACS2_EXTRA_CXX_FLAGS="${RACS2_EXTRA_CXX_FLAGS}"
 
 RUN /bin/bash -lc '\
   source /opt/ros/jazzy/setup.bash && \
   colcon build --merge-install \
     --packages-select bridge_py_s \
-    --cmake-args -DPYTHON_EXECUTABLE=${RACS2_VENV_DIR}/bin/python3 && \
+    --cmake-args \
+      -DPYTHON_EXECUTABLE=${RACS2_VENV_DIR}/bin/python3 \
+      "-DCMAKE_CXX_FLAGS=${RACS2_EXTRA_CXX_FLAGS}" && \
   colcon build --merge-install \
-    --packages-select racs2_msg curiosity_rover_demo'
-
+    --packages-select racs2_msg curiosity_rover_demo \
+    --cmake-args \
+      "-DCMAKE_CXX_FLAGS=${RACS2_EXTRA_CXX_FLAGS}"'
 # copy the start script
 USER root
 COPY start_racs2_demo.sh ${HOME}/start_racs2_demo.sh
