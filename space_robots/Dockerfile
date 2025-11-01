@@ -57,6 +57,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 RUN git clone https://github.com/space-ros/demos.git ${DEMO_DIR}/src/demos
 RUN git clone https://github.com/space-ros/simulation.git ${DEMO_DIR}/src/simulation
 
+# Space Robots and RACS2 both reuse other demo assets and can lead to conflicts
+# This is a temporary fix for [issue #130](https://github.com/space-ros/demos/issues/130)
+RUN rm -r ${DEMO_DIR}/src/demos/racs2_demos_on_spaceros
+
 # Get a list of all installed ros2 packges
 RUN source "${SPACEROS_DIR}/setup.bash" && \
     source "${MOVEIT2_DIR}/install/setup.bash" && \
