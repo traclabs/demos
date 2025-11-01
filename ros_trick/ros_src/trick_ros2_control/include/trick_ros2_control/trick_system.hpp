@@ -23,7 +23,7 @@
 #include "rclcpp/macros.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_lifecycle/state.hpp"
-#include "realtime_tools/realtime_buffer.hpp"
+#include "realtime_tools/realtime_buffer.h"
 #include "trick_ros2_control/socket.hpp"
 #include "trick_ros2_control/utils.hpp"
 #include "trick_ros2_control/visibility_control.h"
