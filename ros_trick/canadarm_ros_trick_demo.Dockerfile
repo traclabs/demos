@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# The base image is built from
-# https://github.com/space-ros/docker/blob/humble-2024.10.0/space_robots/
-# Git tag: humble-2024.10.0.
 FROM openrobotics/space_robots_demo:latest
 
 # Update the ROS package keys
@@ -44,7 +41,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     mesa-vdpau-drivers \
     mesa-vulkan-drivers
 
-ENV TRICK_DEMO_WS=${HOME_DIR}/ros_trick_demo_ws
+ENV TRICK_DEMO_WS=${HOME}/ros_trick_demo_ws
 
 RUN mkdir ${TRICK_DEMO_WS}
 WORKDIR ${TRICK_DEMO_WS}
