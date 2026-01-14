@@ -1,18 +1,33 @@
+/*
+ * Copyright (C) 2024 Robin Baran
+ * Copyright (C) 2024 Stevedan Ogochukwu Omodolor Omodia
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "RadioisotopeThermalGeneratorPlugin.hh"
 
-#include <ignition/transport/Node.hh>
-#include "ignition/gazebo/Model.hh"
+#include <gz/transport/Node.hh>
+#include <gz/sim/Model.hh>
 
-#include <ignition/msgs/double.pb.h>
+#include <gz/msgs/double.pb.h>
+#include <gz/msgs/float.pb.h>
 
 #include <gz/common/Profiler.hh>
-
 #include <gz/plugin/Register.hh>
 
-using namespace simulation;
-
 /// \brief Private data class for RadioisotopeThermalGeneratorPlugin
-class simulation::RadioisotopeThermalGeneratorPluginPrivate
+class gz::sim::systems::RadioisotopeThermalGeneratorPluginPrivate
 {
   /// \brief Name of the link
 public:
@@ -32,33 +47,33 @@ public:
 
   /// \brief Ignition communication node
 public:
-  ignition::transport::Node node;
+  gz::transport::Node node;
 
   /// \brief Publisher for the radioisotope thermal generator output
 public:
-  ignition::transport::Node::Publisher nominalPowerPub;
+  gz::transport::Node::Publisher nominalPowerPub;
 };
 
 //////////////////////////////////////////////////
-RadioisotopeThermalGeneratorPlugin::RadioisotopeThermalGeneratorPlugin()
+gz::sim::systems::RadioisotopeThermalGeneratorPlugin::RadioisotopeThermalGeneratorPlugin()
     : dataPtr(std::make_unique<RadioisotopeThermalGeneratorPluginPrivate>())
 {
 }
 
 //////////////////////////////////////////////////
-RadioisotopeThermalGeneratorPlugin::~RadioisotopeThermalGeneratorPlugin() = default;
+gz::sim::systems::RadioisotopeThermalGeneratorPlugin::~RadioisotopeThermalGeneratorPlugin() = default;
 
 //////////////////////////////////////////////////
-void RadioisotopeThermalGeneratorPlugin::Configure(const ignition::gazebo::Entity &_entity,
+void gz::sim::systems::RadioisotopeThermalGeneratorPlugin::Configure(const gz::sim::Entity &_entity,
                                                    const std::shared_ptr<const sdf::Element> &_sdf,
-                                                   ignition::gazebo::EntityComponentManager &_ecm,
-                                                   ignition::gazebo::EventManager &_eventMgr)
+                                                   gz::sim::EntityComponentManager &_ecm,
+                                                   gz::sim::EventManager &_eventMgr)
 {
   // Store the pointer to the model the RTG is under
-  auto model = ignition::gazebo::Model(_entity);
+  auto model = gz::sim::Model(_entity);
   if (!model.Valid(_ecm))
   {
-    ignerr << "Radioisotope Thermal Generator plugin should be attached to a model entity. "
+    gzerr << "Radioisotope Thermal Generator plugin should be attached to a model entity. "
            << "Failed to initialize." << std::endl;
     return;
   }
@@ -70,18 +85,18 @@ void RadioisotopeThermalGeneratorPlugin::Configure(const ignition::gazebo::Entit
   {
     this->dataPtr->linkName = _sdf->Get<std::string>("link_name");
     this->dataPtr->topicName = "/model/" + this->dataPtr->modelName + "/" + this->dataPtr->linkName + "/radioisotope_thermal_generator_output";
-    auto validTopic = ignition::transport::TopicUtils::AsValidTopic(this->dataPtr->topicName);
+    auto validTopic = gz::transport::TopicUtils::AsValidTopic(this->dataPtr->topicName);
     if (validTopic.empty())
     {
-      ignerr << "Failed to create valid topic [" << this->dataPtr->topicName << "]" << std::endl;
+      gzerr << "Failed to create valid topic [" << this->dataPtr->topicName << "]" << std::endl;
       return;
     }
     // Advertise topic where data will be published
-    this->dataPtr->nominalPowerPub = this->dataPtr->node.Advertise<ignition::msgs::Float>(validTopic);
+    this->dataPtr->nominalPowerPub = this->dataPtr->node.Advertise<gz::msgs::Float>(validTopic);
   }
   else
   {
-    ignerr << "Radioisotope Thermal Generator plugin should have a <link_name> element. "
+    gzerr << "Radioisotope Thermal Generator plugin should have a <link_name> element. "
            << "Failed to initialize." << std::endl;
     return;
   }
@@ -92,30 +107,31 @@ void RadioisotopeThermalGeneratorPlugin::Configure(const ignition::gazebo::Entit
   }
   else
   {
-    ignerr << "Radioisotope Thermal Generator plugin should have a <nominal_power> element. "
+    gzerr << "Radioisotope Thermal Generator plugin should have a <nominal_power> element. "
            << "Failed to initialize." << std::endl;
     return;
   }
 }
 
 //////////////////////////////////////////////////
-void RadioisotopeThermalGeneratorPlugin::PostUpdate(const ignition::gazebo::UpdateInfo &_info,
-                                                    const ignition::gazebo::EntityComponentManager &_ecm)
+void gz::sim::systems::RadioisotopeThermalGeneratorPlugin::PostUpdate(const gz::sim::UpdateInfo &_info,
+                                                    const gz::sim::EntityComponentManager &_ecm)
 {
-  IGN_PROFILE("RadioisotopeThermalGeneratorPlugin::PostUpdate");
+  GZ_PROFILE("RadioisotopeThermalGeneratorPlugin::PostUpdate");
   if (_info.paused)
   {
     return;
   }
   // Publish result
-  ignition::msgs::Float msg;
+  gz::msgs::Float msg;
   msg.set_data(this->dataPtr->nominalPower);
   this->dataPtr->nominalPowerPub.Publish(msg);
   igndbg << "Published RTG output: " << this->dataPtr->nominalPower << std::endl;
 }
 
-IGNITION_ADD_PLUGIN(RadioisotopeThermalGeneratorPlugin, ignition::gazebo::System,
-                    RadioisotopeThermalGeneratorPlugin::ISystemConfigure,
-                    RadioisotopeThermalGeneratorPlugin::ISystemPostUpdate)
+GZ_ADD_PLUGIN(gz::sim::systems::RadioisotopeThermalGeneratorPlugin, 
+              gz::sim::System,
+              gz::sim::systems::RadioisotopeThermalGeneratorPlugin::ISystemConfigure,
+              gz::sim::systems::RadioisotopeThermalGeneratorPlugin::ISystemPostUpdate)
 
-IGNITION_ADD_PLUGIN_ALIAS(RadioisotopeThermalGeneratorPlugin, "simulation::RadioisotopeThermalGeneratorPlugin")
+GZ_ADD_PLUGIN_ALIAS(gz::sim::systems::RadioisotopeThermalGeneratorPlugin, "RadioisotopeThermalGeneratorPlugin")

@@ -56,7 +56,7 @@ class RunDemo(Node):
 
         self.stopped = True
 
-        timer_period = 0.08
+        timer_period = 0.03
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
         self.curr_action = Twist()

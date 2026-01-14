@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2024 Stevedan Ogochukwu Omodolor Omodia
+ * Copyright (C) 2024 Robin Baran
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "SensorPowerSystemPlugin.hh"
 #include <gz/sim/components/Name.hh>
 #include <gz/sim/components/Sensor.hh>
@@ -12,11 +28,11 @@
 #include <gz/common/Util.hh>
 #include <gz/sensors/Manager.hh>
 #include <gz/sensors/Sensor.hh>
+#include <gz/plugin/Register.hh>
 
-namespace gz {
-namespace sim {
-inline namespace GZ_SIM_VERSION_NAMESPACE {
-namespace systems {
+using namespace gz;
+using namespace sim;
+using namespace systems;
 
 /// \brief Sensor information
 struct SensorInfo
@@ -56,7 +72,7 @@ struct SensorInfo
 };
 
 /// \brief  Definition of the private data class
-class simulation::SensorPowerSystemPrivate
+class gz::sim::systems::SensorPowerSystemPrivate
 {
     /// \brief Callback executed when a sensor is activated
     /// \param[in] _id The id of the sensor
@@ -78,9 +94,9 @@ public:
 public:
     gz::sim::Model model{gz::sim::kNullEntity};
 
-    /// \brief Ignition communication node
+    /// \brief communication node
 public:
-    transport::Node node;
+    gz::transport::Node node;
 
     /// \brief Sensors information
 public:
@@ -127,10 +143,10 @@ void SensorPowerSystemPlugin::Configure(const gz::sim::Entity &_entity,
         [&](const gz::sim::Entity &_entity,
             const gz::sim::components::Camera *_camera) -> bool
         {
-            auto cameraName = _ecm.Component<components::Name>(_entity);
+            auto cameraName = _ecm.Component<gz::sim::components::Name>(_entity);
             if (cameraName)
             {
-                auto cameraPtr = _ecm.Component<components::Camera>(_entity);
+                auto cameraPtr = _ecm.Component<gz::sim::components::Camera>(_entity);
                 auto camera = cameraPtr->Data().CameraSensor();
                 auto parent = camera->Element()->GetParent();
                 if (parent->HasElement("power_load") && parent->HasElement("battery_name"))
@@ -156,15 +172,15 @@ void SensorPowerSystemPlugin::Configure(const gz::sim::Entity &_entity,
         });
 
     // imu sensors
-    _ecm.Each<components::Imu>(
-        [&](const Entity &_entity,
-            const components::Imu *_imu) -> bool
+    _ecm.Each<gz::sim::components::Imu>(
+        [&](const gz::sim::Entity &_entity,
+            const gz::sim::components::Imu *_imu) -> bool
         {
             // get the imu name
-            auto imuName = _ecm.Component<components::Name>(_entity);
+            auto imuName = _ecm.Component<gz::sim::components::Name>(_entity);
             if (imuName)
             {
-                auto imuPtr = _ecm.Component<components::Imu>(_entity);
+                auto imuPtr = _ecm.Component<gz::sim::components::Imu>(_entity);
                 auto imu = imuPtr->Data().ImuSensor();
                 auto parent = imu->Element()->GetParent();
                 if (parent->HasElement("power_load") && parent->HasElement("battery_name"))
@@ -192,7 +208,7 @@ void SensorPowerSystemPlugin::Configure(const gz::sim::Entity &_entity,
     for (auto &sensor : this->dataPtr->sensorsInfo)
     {
         std::string stateTopic{"/model/" + this->dataPtr->model.Name(_ecm) + "/sensor/" + sensor.name + "/activate"};
-        auto validSensorTopic = transport::TopicUtils::AsValidTopic(stateTopic);
+        auto validSensorTopic = gz::transport::TopicUtils::AsValidTopic(stateTopic);
         if (validSensorTopic.empty())
         {
             gzerr << "Failed to create valid topic. Not valid: ["
@@ -206,8 +222,8 @@ void SensorPowerSystemPlugin::Configure(const gz::sim::Entity &_entity,
 }
 
 //////////////////////////////////////////////////
-void SensorPowerSystemPlugin::PreUpdate(const UpdateInfo &_info,
-                                        EntityComponentManager &_ecm)
+void SensorPowerSystemPlugin::PreUpdate(const gz::sim::UpdateInfo &_info,
+                                        gz::sim::EntityComponentManager &_ecm)
 
 {
     if (_info.paused)
@@ -217,10 +233,10 @@ void SensorPowerSystemPlugin::PreUpdate(const UpdateInfo &_info,
     if (!this->dataPtr->batteriesInitialized)
     {
         this->dataPtr->batteriesInitialized = true;
-        _ecm.Each<components::BatterySoC, components::Name>(
-            [&](const Entity &_entity,
-                const components::BatterySoC *_batterySoc,
-                const components::Name *_name) -> bool
+        _ecm.Each<gz::sim::components::BatterySoC, gz::sim::components::Name>(
+            [&](const gz::sim::Entity &_entity,
+                const gz::sim::components::BatterySoC *_batterySoc,
+                const gz::sim::components::Name *_name) -> bool
             {
                 if (_name)
                 {
@@ -242,9 +258,9 @@ void SensorPowerSystemPlugin::PreUpdate(const UpdateInfo &_info,
             if (sensor.batteryExist)
             {
                 sensor.batteryConsumerEntity = _ecm.CreateEntity();
-                components::BatteryPowerLoadInfo batteryPowerLoad{
+                gz::sim::components::BatteryPowerLoadInfo batteryPowerLoad{
                     sensor.batteryEntity, sensor.powerLoad};
-                _ecm.CreateComponent(sensor.batteryConsumerEntity, components::BatteryPowerLoad(batteryPowerLoad));
+                _ecm.CreateComponent(sensor.batteryConsumerEntity, gz::sim::components::BatteryPowerLoad(batteryPowerLoad));
                 _ecm.SetParentEntity(sensor.batteryConsumerEntity, sensor.batteryEntity);
             }
             else
@@ -266,17 +282,17 @@ void SensorPowerSystemPlugin::PreUpdate(const UpdateInfo &_info,
                 }
                 std::lock_guard<std::mutex> lock(*sensor.mutex_ptr);
                 sensor.dataUpdated = false;
-                components::BatteryPowerLoadInfo batteryPowerLoad{
-                    sensor.batteryConsumerEntity, setPower};
-                _ecm.SetComponentData<components::BatteryPowerLoad>(sensor.batteryConsumerEntity, batteryPowerLoad);
+                gz::sim::v8::components::BatteryPowerLoadInfo batteryPowerLoad{
+                    sensor.batteryEntity, setPower};
+                _ecm.SetComponentData<gz::sim::components::BatteryPowerLoad>(sensor.batteryConsumerEntity, batteryPowerLoad);
             }
         }
     }
 }
 
 /////////////////////////////////////////////////
-void SensorPowerSystemPlugin::PostUpdate(const UpdateInfo &_info,
-                                         const EntityComponentManager &_ecm)
+void SensorPowerSystemPlugin::PostUpdate(const gz::sim::UpdateInfo &_info,
+                                         const gz::sim::EntityComponentManager &_ecm)
 
 {
     if(_info.paused)
@@ -288,13 +304,13 @@ void SensorPowerSystemPlugin::PostUpdate(const UpdateInfo &_info,
 
 /////////////////////////////////////////////////
 void SensorPowerSystemPrivate::HasSufficientBattery(
-    const EntityComponentManager &_ecm)
+    const gz::sim::EntityComponentManager &_ecm)
 {
-      _ecm.Each<components::BatterySoC>([&](
-        const Entity &_entity,
-        const components::BatterySoC *_data
+      _ecm.Each<gz::sim::components::BatterySoC>([&](
+        const gz::sim::Entity &_entity,
+        const gz::sim::components::BatterySoC *_data
       ){
-        auto BatteryName = _ecm.Component<components::Name>(_entity);
+        auto BatteryName = _ecm.Component<gz::sim::components::Name>(_entity);
         if(!BatteryName)
         {
             return false;
@@ -318,12 +334,6 @@ void SensorPowerSystemPrivate::HasSufficientBattery(
 }
 
 /////////////////////////////////////////////////
-
-}  // namespace systems
-}
-}  // namespace sim
-}  // namespace gz
-
 void SensorPowerSystemPrivate::OnActivateSensor(int _id, const gz::msgs::Boolean &_msg)
 {
     std::lock_guard<std::mutex> lock(*this->sensorsInfo[_id].mutex_ptr);
@@ -332,12 +342,11 @@ void SensorPowerSystemPrivate::OnActivateSensor(int _id, const gz::msgs::Boolean
 }
 
 
-GZ_ADD_PLUGIN(gz::sim::systems::SensorPowerSystemPlugin,
-              gz::sim::System,
-              gz::sim::systems::SensorPowerSystemPlugin::ISystemConfigure,
-              gz::sim::systems::SensorPowerSystemPlugin::ISystemPreUpdate,
-              gz::sim::systems::SensorPowerSystemPlugin::ISystemPostUpdate)
+GZ_ADD_PLUGIN(SensorPowerSystemPlugin,
+              System,
+              SensorPowerSystemPlugin::ISystemConfigure,
+              SensorPowerSystemPlugin::ISystemPreUpdate,
+              SensorPowerSystemPlugin::ISystemPostUpdate)
 
-GZ_ADD_PLUGIN_ALIAS(SensorPowerSystemPlugin, 
-  "gz::sim::systems::SensorPowerSystemPlugin"
-  )
+GZ_ADD_PLUGIN_ALIAS(gz::sim::systems::SensorPowerSystemPlugin, 
+                    "SensorPowerSystemPlugin")

@@ -74,63 +74,53 @@ else()
   message(FATAL_ERROR "Unsupported GZ_VERSION: $ENV{GZ_VERSION}")
 endif()
 
-
-
 # Add the plugins directory to the include path
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Plugins)
 
 # Add the SolarPanelPlugin library
-#add_library(SolarPanelPlugin SHARED
-#  plugins/SolarPanelPlugin.cc
-#)
+add_library(SolarPanelPlugin SHARED
+  plugins/SolarPanelPlugin.cc
+)
 
 # Link the SolarPanelPlugin library with required dependencies
-#target_link_libraries(SolarPanelPlugin
-#  PRIVATE ignition-plugin${IGNITION_PLUGIN_VER}::ignition-plugin${IGNITION_PLUGIN_VER}
-#  PRIVATE ignition-common${IGNITION_COMMON_VER}::ignition-common${IGNITION_COMMON_VER}
-#  PRIVATE ignition-rendering${IGNITION_RENDERING_VER}::ignition-rendering${IGNITION_RENDERING_VER}
-#  PRIVATE ignition-gazebo${IGNITION_SIM_VER}::core
-#)
+target_link_libraries(SolarPanelPlugin PRIVATE 
+  gz-common${GZ_COMMON_VER}::gz-common${GZ_COMMON_VER}
+  gz-rendering${GZ_RENDERING_VER}::gz-rendering${GZ_RENDERING_VER}  
+  gz-sim${GZ_SIM_VER}::gz-sim${GZ_SIM_VER}
+)
 
 # Add the RadioisotopeThermalGeneratorPlugin library
-#add_library(RadioisotopeThermalGeneratorPlugin SHARED
-#  plugins/RadioisotopeThermalGeneratorPlugin.cc
-#)
+add_library(RadioisotopeThermalGeneratorPlugin SHARED
+  plugins/RadioisotopeThermalGeneratorPlugin.cc
+)
 
 # Link the RadioisotopeThermalGeneratorPlugin library with required dependencies
-#target_link_libraries(RadioisotopeThermalGeneratorPlugin
-#  PRIVATE ignition-plugin${IGNITION_PLUGIN_VER}::ignition-plugin${IGNITION_PLUGIN_VER}
-#  PRIVATE ignition-gazebo${IGNITION_SIM_VER}::core
-#)
+target_link_libraries(RadioisotopeThermalGeneratorPlugin
+  PRIVATE gz-sim${GZ_SIM_VER}::gz-sim${GZ_SIM_VER}
+)
 
 # Add the RechargeableBatteryPlugin library
-#add_library(RechargeableBatteryPlugin SHARED
-#  plugins/RechargeableBatteryPlugin.cc
-#)
+add_library(RechargeableBatteryPlugin SHARED
+  plugins/RechargeableBatteryPlugin.cc
+)
 
 # Link the RechargeableBatteryPlugin library with required dependencies
-#target_link_libraries(RechargeableBatteryPlugin
-#  PRIVATE ignition-plugin${IGNITION_PLUGIN_VER}::ignition-plugin${IGNITION_PLUGIN_VER}
-#  PRIVATE ignition-gazebo${IGNITION_SIM_VER}::core
-#  # PRIVATE ignition-common${IGN_COMMON_VER}::ignition-common${IGNITION_COMMON_VER}
-#)
+target_link_libraries(RechargeableBatteryPlugin
+  PRIVATE gz-sim${GZ_SIM_VER}::gz-sim${GZ_SIM_VER}
+)
 
 
-# add the SensorPowerSystemPlugin library
-#add_library(SensorPowerSystemPlugin SHARED
-#  plugins/SensorPowerSystemPlugin.cc
-#)
+#add the SensorPowerSystemPlugin library
+add_library(SensorPowerSystemPlugin SHARED
+  plugins/SensorPowerSystemPlugin.cc
+)
 
 # Link the SensorPowerSystemPlugin library with required dependencies
-#target_link_libraries(SensorPowerSystemPlugin
-#  PRIVATE gz-sim${GZ_SIM_VER}::gz-sim${GZ_SIM_VER}
-#  PRIVATE gz-sensors${GZ_SENSORS_VER}::gz-sensors${GZ_SENSORS_VER}
-#)  
-#  ignition-plugin${IGNITION_PLUGIN_VER}::ignition-plugin${IGNITION_PLUGIN_VER}
-#  PRIVATE ignition-gazebo${IGNITION_SIM_VER}::core
-#  PRIVATE ignition-gazebo${IGNITION_SIM_VER}::ignition-gazebo${IGNITION_SIM_VER}
-#  PRIVATE ignition-sensors${IGNITION_SENSORS_VER}::ignition-sensors${IGNITION_SENSORS_VER}
-#)
+target_link_libraries(SensorPowerSystemPlugin PRIVATE 
+  gz-sim${GZ_SIM_VER}::gz-sim${GZ_SIM_VER}
+  gz-sensors${GZ_SENSORS_VER}::gz-sensors${GZ_SENSORS_VER}  
+)
+
 
 # Install directories
 install(DIRECTORY
@@ -140,10 +130,10 @@ install(DIRECTORY
 
 # Install the plugin library
 install(TARGETS 
-#  SolarPanelPlugin 
-#  RadioisotopeThermalGeneratorPlugin 
-#  RechargeableBatteryPlugin 
-#  SensorPowerSystemPlugin
+  SolarPanelPlugin 
+  RadioisotopeThermalGeneratorPlugin 
+  RechargeableBatteryPlugin 
+  SensorPowerSystemPlugin
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}

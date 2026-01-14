@@ -1,18 +1,37 @@
+/*
+ * Copyright (C) 2024 Stevedan Ogochukwu Omodolor Omodia
+ * Copyright (C) 2024 Robin Baran
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #ifndef RECHARGEABLE_BATTERY_PLUGIN_HH_
 #define RECHARGEABLE_BATTERY_PLUGIN_HH_
 
 #include <memory>
-#include <ignition/gazebo/System.hh>
-#include <ignition/common/Battery.hh>
+#include <gz/sim/System.hh>
+#include <gz/common/Battery.hh>
 
+namespace gz {
+namespace sim {
+inline namespace GZ_SIM_VERSION_NAMESPACE {
+namespace systems {
 
-namespace simulation
-{
     // Forward declaration
     class RechargeableBatteryPluginPrivate;
 
     /// \brief A plugin to simulate rechargeable batteries usage.
-    /// This was adapted from the LinearBatteryPlugin from Ignition Gazebo.
+    /// This was adapted from the LinearBatteryPlugin from Gazebo.
     ///
     /// This system processes the following sdf parameters:
     /// - `<battery_name>`: The name of the battery(required)
@@ -30,11 +49,11 @@ namespace simulation
     /// - `<power_source>`: This is to subscribe to power sources topics. Repeat as many times as needed with the same name
 
     class RechargeableBatteryPlugin
-        : public ignition::gazebo::System,
-          public ignition::gazebo::ISystemConfigure,
-          public ignition::gazebo::ISystemPreUpdate,
-          public ignition::gazebo::ISystemUpdate,
-          public ignition::gazebo::ISystemPostUpdate
+        : public System,
+          public ISystemConfigure,
+          public ISystemPreUpdate,
+          public ISystemUpdate,
+          public ISystemPostUpdate
     {
         /// \brief Constructor
     public:
@@ -46,36 +65,40 @@ namespace simulation
 
         /// Documentation Inherited
     public:
-        void Configure(const ignition::gazebo::Entity &_entity,
+        void Configure(const Entity &_entity,
                        const std::shared_ptr<const sdf::Element> &_sdf,
-                       ignition::gazebo::EntityComponentManager &_ecm,
-                       ignition::gazebo::EventManager &_eventMgr) final;
+                       EntityComponentManager &_ecm,
+                       EventManager &_eventMgr) final;
 
         /// Documentation Inherited
     public:
-        void PreUpdate(const ignition::gazebo::UpdateInfo &_info,
-                       ignition::gazebo::EntityComponentManager &_ecm) override;
+        void PreUpdate(const gz::sim::UpdateInfo &_info,
+                       gz::sim::EntityComponentManager &_ecm) override;
 
         // Documentation Inherited
     public:
-        void Update(const ignition::gazebo::UpdateInfo &_info,
-                    ignition::gazebo::EntityComponentManager &_ecm) override;
+        void Update(const gz::sim::UpdateInfo &_info,
+                    gz::sim::EntityComponentManager &_ecm) override;
 
         /// Documentation Inherited
     public:
-        void PostUpdate(const ignition::gazebo::UpdateInfo &_info,
-                        const ignition::gazebo::EntityComponentManager &_ecm) override;
+        void PostUpdate(const gz::sim::UpdateInfo &_info,
+                        const gz::sim::EntityComponentManager &_ecm) override;
 
         /// \brief Callback for Battery Update events.
         /// \param[in] _battery Pointer to the battery that is to be updated.
         /// \return The new voltage.
     private:
-        double OnUpdateVoltage(const ignition::common::Battery *_battery);
+        double OnUpdateVoltage(const gz::common::Battery *_battery);
 
         /// \brief Private data pointer
     private:
         std::unique_ptr<RechargeableBatteryPluginPrivate> dataPtr;
     };
 
+}  // namespace systems
 }
+}  // namespace sim
+}  // namespace gz
+
 #endif // RECHARGEABLE_BATTERY_PLUGIN_HH_
