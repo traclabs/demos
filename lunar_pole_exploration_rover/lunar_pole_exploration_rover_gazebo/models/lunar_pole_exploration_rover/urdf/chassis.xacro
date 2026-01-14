@@ -85,14 +85,14 @@
 			<origin xyz="0 0 0"
 					rpy="0 0 0"/>
 			<geometry>
-				<mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/solar_panel.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
+				<mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/solar_panel_dark_blue.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
 			</geometry>
 		</collision>
 		<visual>
 			<origin xyz="0 0 0"
 					rpy="0 0 0"/>
 			<geometry>
-				<mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/solar_panel.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
+				<mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/solar_panel_dark_blue.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
 			</geometry>
 		</visual>
 		<inertial>
@@ -112,14 +112,14 @@
 			<origin xyz="0 0 0"
 					rpy="0 0 0"/>
 			<geometry>
-				<mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/solar_panel.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
+				<mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/solar_panel_dark_blue.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
 			</geometry>
 		</collision>
 		<visual>
 			<origin xyz="0 0 0"
 					rpy="0 0 0"/>
 			<geometry>
-				<mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/solar_panel.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
+				<mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/solar_panel_dark_blue.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
 			</geometry>
 		</visual>
 		<inertial>
@@ -139,14 +139,14 @@
 			<origin xyz="0 0 0"
 					rpy="0 0 0"/>
 			<geometry>
-				<mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/solar_panel.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
+				<mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/solar_panel_dark_blue.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
 			</geometry>
 		</collision>
 		<visual>
 			<origin xyz="0 0 0"
 					rpy="0 0 0"/>
 			<geometry>
-				<mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/solar_panel.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
+				<mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/solar_panel_dark_blue.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
 			</geometry>
 		</visual>
 		<inertial>

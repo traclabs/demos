@@ -117,15 +117,15 @@ endif()
 
 
 # add the SensorPowerSystemPlugin library
-add_library(SensorPowerSystemPlugin SHARED
-  plugins/SensorPowerSystemPlugin.cc
-)
+#add_library(SensorPowerSystemPlugin SHARED
+#  plugins/SensorPowerSystemPlugin.cc
+#)
 
 # Link the SensorPowerSystemPlugin library with required dependencies
-target_link_libraries(SensorPowerSystemPlugin
-  PRIVATE gz-sim${GZ_SIM_VER}::gz-sim${GZ_SIM_VER}
-  PRIVATE gz-sensors${GZ_SENSORS_VER}::gz-sensors${GZ_SENSORS_VER}
-)  
+#target_link_libraries(SensorPowerSystemPlugin
+#  PRIVATE gz-sim${GZ_SIM_VER}::gz-sim${GZ_SIM_VER}
+#  PRIVATE gz-sensors${GZ_SENSORS_VER}::gz-sensors${GZ_SENSORS_VER}
+#)  
 #  ignition-plugin${IGNITION_PLUGIN_VER}::ignition-plugin${IGNITION_PLUGIN_VER}
 #  PRIVATE ignition-gazebo${IGNITION_SIM_VER}::core
 #  PRIVATE ignition-gazebo${IGNITION_SIM_VER}::ignition-gazebo${IGNITION_SIM_VER}
@@ -143,7 +143,7 @@ install(TARGETS
 #  SolarPanelPlugin 
 #  RadioisotopeThermalGeneratorPlugin 
 #  RechargeableBatteryPlugin 
-  SensorPowerSystemPlugin
+#  SensorPowerSystemPlugin
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
