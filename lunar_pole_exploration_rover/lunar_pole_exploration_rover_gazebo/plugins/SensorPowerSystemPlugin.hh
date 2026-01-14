@@ -3,11 +3,13 @@
 
 
 
-#include <ignition/gazebo/System.hh>
+#include <gz/sim/System.hh>
 
+namespace gz {
+namespace sim {
+inline namespace GZ_SIM_VERSION_NAMESPACE {
+namespace systems {
 
-namespace simulation
-{
     // Forward declaration
     class SensorPowerSystemPrivate;
 
@@ -27,10 +29,10 @@ namespace simulation
     /// why this is a separate plugin.
 
 class SensorPowerSystemPlugin
-    : public ignition::gazebo::System,
-      public ignition::gazebo::ISystemConfigure,
-      public ignition::gazebo::ISystemPreUpdate,
-      public ignition::gazebo::ISystemPostUpdate
+    : public System,
+      public ISystemConfigure,
+      public ISystemPreUpdate,
+      public ISystemPostUpdate
       {
             // Constructor
         public:
@@ -42,19 +44,19 @@ class SensorPowerSystemPlugin
 
             /// Documentation Inherited
         public:
-            void Configure(const ignition::gazebo::Entity &_entity,
+            void Configure(const Entity &_entity,
                         const std::shared_ptr<const sdf::Element> &_sdf,
-                        ignition::gazebo::EntityComponentManager &_ecm,
-                        ignition::gazebo::EventManager &_eventMgr) final;
+                        EntityComponentManager &_ecm,
+                        EventManager &_eventMgr) final;
             /// Documentation Inherited
         public:
-            void PreUpdate(const ignition::gazebo::UpdateInfo &_info,
-                        ignition::gazebo::EntityComponentManager &_ecm) override;
+            void PreUpdate(const gz::sim::UpdateInfo &_info,
+                        gz::sim::EntityComponentManager &_ecm) override;
 
             /// Documentation Inherited
         public:
-            void PostUpdate(const ignition::gazebo::UpdateInfo &_info,
-                            const ignition::gazebo::EntityComponentManager &_ecm) override;
+            void PostUpdate(const gz::sim::UpdateInfo &_info,
+                            const gz::sim::EntityComponentManager &_ecm) override;
             /// \brief Private data pointer
         private:
             std::unique_ptr<SensorPowerSystemPrivate> dataPtr;

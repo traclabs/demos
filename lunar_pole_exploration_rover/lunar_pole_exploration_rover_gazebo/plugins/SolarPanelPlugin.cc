@@ -366,7 +366,7 @@ bool SolarPanelPluginPrivate::FindScene()
 
 //////////////////////////////////////////////////
 std::vector<std::string> SolarPanelPluginPrivate::GetVisualChildren(
-    const ignition::gazebo::EntityComponentManager &_ecm)
+    const EntityComponentManager &_ecm)
 {
   // Build the prefix for the scoped name
   std::string scopedPrefix = this->modelName + "::" + this->linkName + "::";
@@ -393,8 +393,14 @@ std::vector<std::string> SolarPanelPluginPrivate::GetVisualChildren(
 ignition::common::EventT<void(const ignition::rendering::ScenePtr &)>
     SolarPanelPluginPrivate::sceneEvent;
 
-IGNITION_ADD_PLUGIN(SolarPanelPlugin, ignition::gazebo::System,
-                    SolarPanelPlugin::ISystemConfigure,
-                    SolarPanelPlugin::ISystemPostUpdate)
+}  // namespace systems
+}
+}  // namespace sim
+}  // namespace gz
 
-IGNITION_ADD_PLUGIN_ALIAS(SolarPanelPlugin, "simulation::SolarPanelPlugin")
+GZ_ADD_PLUGIN(gz::sim::systems::SolarPanelPlugin, 
+              gz::sim::System,
+              gz::sim::systems::SolarPanelPlugin::ISystemConfigure,
+              gz::sim::systems::SolarPanelPlugin::ISystemPostUpdate)
+
+GZ_ADD_PLUGIN_ALIAS(gz::sim::systems::SolarPanelPlugin, "SolarPanelPlugin")

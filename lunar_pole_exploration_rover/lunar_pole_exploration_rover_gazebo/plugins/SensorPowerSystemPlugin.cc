@@ -1,19 +1,22 @@
 #include "SensorPowerSystemPlugin.hh"
-#include <ignition/gazebo/components/Name.hh>
-#include <ignition/gazebo/components/Sensor.hh>
-#include <ignition/gazebo/components/Camera.hh>
-#include <ignition/gazebo/components/Imu.hh>
-#include "gz/sim/components/BatterySoC.hh"
-#include "gz/sim/components/BatteryPowerLoad.hh"
+#include <gz/sim/components/Name.hh>
+#include <gz/sim/components/Sensor.hh>
+#include <gz/sim/components/Camera.hh>
+#include <gz/sim/components/Imu.hh>
+#include <gz/sim/components/BatterySoC.hh>
+#include <gz/sim/components/BatteryPowerLoad.hh>
 #include <sdf/Sensor.hh>
-#include <ignition/msgs/boolean.pb.h>
-#include <ignition/transport/Node.hh>
-#include "gz/sim/Model.hh"
+#include <gz/msgs/boolean.pb.h>
+#include <gz/transport/Node.hh>
+#include <gz/sim/Model.hh>
 #include <gz/common/Util.hh>
 #include <gz/sensors/Manager.hh>
-#include "ignition/sensors/Sensor.hh"
+#include <gz/sensors/Sensor.hh>
 
-using namespace simulation;
+namespace gz {
+namespace sim {
+inline namespace GZ_SIM_VERSION_NAMESPACE {
+namespace systems {
 
 /// \brief Sensor information
 struct SensorInfo
@@ -34,10 +37,10 @@ struct SensorInfo
     std::string batteryName{""};
 
     /// \brief Battery entity
-    ignition::gazebo::Entity batteryEntity{ignition::gazebo::kNullEntity};
+    gz::sim::Entity batteryEntity{gz::sim::kNullEntity};
 
     /// \brief Battery consumer entity
-    ignition::gazebo::Entity batteryConsumerEntity{ignition::gazebo::kNullEntity};
+    gz::sim::Entity batteryConsumerEntity{gz::sim::kNullEntity};
 
     /// \brief Flag to check if the battery exists
     bool batteryExist{false};
@@ -59,13 +62,13 @@ class simulation::SensorPowerSystemPrivate
     /// \param[in] _id The id of the sensor
     /// \param[in] _msg The message containing the activation state
 public:
-    void OnActivateSensor(int _id, const ignition::msgs::Boolean &_msg);
+    void OnActivateSensor(int _id, const gz::msgs::Boolean &_msg);
 
     /// \brief Check if the battery has sufficient charge
     /// \param[in] _ecm The entity component manager
     /// \return True if the battery has sufficient charge
 public:
-    void HasSufficientBattery(const ignition::gazebo::EntityComponentManager &_ecm);
+    void HasSufficientBattery(const gz::sim::EntityComponentManager &_ecm);
 
     /// \brief Model name
 public:
@@ -73,11 +76,11 @@ public:
 
     /// \brief Model entity
 public:
-    gz::sim::Model model{ignition::gazebo::kNullEntity};
+    gz::sim::Model model{gz::sim::kNullEntity};
 
     /// \brief Ignition communication node
 public:
-    ignition::transport::Node node;
+    transport::Node node;
 
     /// \brief Sensors information
 public:
@@ -98,16 +101,16 @@ SensorPowerSystemPlugin::SensorPowerSystemPlugin()
 SensorPowerSystemPlugin::~SensorPowerSystemPlugin() = default;
 
 /////////////////////////////////////////////////
-void SensorPowerSystemPlugin::Configure(const ignition::gazebo::Entity &_entity,
+void SensorPowerSystemPlugin::Configure(const gz::sim::Entity &_entity,
                                         const std::shared_ptr<const sdf::Element> &_sdf,
-                                        ignition::gazebo::EntityComponentManager &_ecm,
-                                        ignition::gazebo::EventManager &_eventMgr)
+                                        gz::sim::EntityComponentManager &_ecm,
+                                        gz::sim::EventManager &_eventMgr)
 {
     // Store the pointer to the model this battery is under
-    auto model = ignition::gazebo::Model(_entity);
+    auto model = gz::sim::Model(_entity);
     if (!model.Valid(_ecm))
     {
-        ignerr << "SensorPowerSystemPlugin plugin should be attached to a model entity. "
+        gzerr << "SensorPowerSystemPlugin plugin should be attached to a model entity. "
                << "Failed to initialize." << std::endl;
         return;
     }
@@ -120,14 +123,14 @@ void SensorPowerSystemPlugin::Configure(const ignition::gazebo::Entity &_entity,
     // camera sensors
     int sensorCount = 0;
 
-    _ecm.Each<ignition::gazebo::components::Camera>(
-        [&](const ignition::gazebo::Entity &_entity,
-            const ignition::gazebo::components::Camera *_camera) -> bool
+    _ecm.Each<gz::sim::components::Camera>(
+        [&](const gz::sim::Entity &_entity,
+            const gz::sim::components::Camera *_camera) -> bool
         {
-            auto cameraName = _ecm.Component<ignition::gazebo::components::Name>(_entity);
+            auto cameraName = _ecm.Component<components::Name>(_entity);
             if (cameraName)
             {
-                auto cameraPtr = _ecm.Component<ignition::gazebo::components::Camera>(_entity);
+                auto cameraPtr = _ecm.Component<components::Camera>(_entity);
                 auto camera = cameraPtr->Data().CameraSensor();
                 auto parent = camera->Element()->GetParent();
                 if (parent->HasElement("power_load") && parent->HasElement("battery_name"))
@@ -139,12 +142,12 @@ void SensorPowerSystemPlugin::Configure(const ignition::gazebo::Entity &_entity,
                     sensorInfo.batteryName = parent->Get<std::string>("battery_name");
                     sensorInfo.enableSensor = true;
                     sensorInfo.dataUpdated = false;
-                    igndbg << "CAMERA: " << sensorInfo.name << " id: " << sensorInfo.id << std::endl;
-                    igndbg << "CAMERA: " << sensorInfo.name << " Power: " << sensorInfo.powerLoad << std::endl;
-                    igndbg << "CAMERA: " << sensorInfo.name << " Battery name: " << sensorInfo.batteryName << std::endl;
-                    igndbg << "CAMERA: " << sensorInfo.name << " is enabled: " << sensorInfo.enableSensor << std::endl;
-                    igndbg << "CAMERA: " << sensorInfo.name << " data updated: " << sensorInfo.dataUpdated << std::endl;
-                    igndbg << "CAMERA id: " << sensorInfo.id << std::endl;
+                    gzdbg << "CAMERA: " << sensorInfo.name << " id: " << sensorInfo.id << std::endl;
+                    gzdbg << "CAMERA: " << sensorInfo.name << " Power: " << sensorInfo.powerLoad << std::endl;
+                    gzdbg << "CAMERA: " << sensorInfo.name << " Battery name: " << sensorInfo.batteryName << std::endl;
+                    gzdbg << "CAMERA: " << sensorInfo.name << " is enabled: " << sensorInfo.enableSensor << std::endl;
+                    gzdbg << "CAMERA: " << sensorInfo.name << " data updated: " << sensorInfo.dataUpdated << std::endl;
+                    gzdbg << "CAMERA id: " << sensorInfo.id << std::endl;
                     this->dataPtr->sensorsInfo.emplace_back(std::move(sensorInfo));
                     sensorCount++;
                 }
@@ -153,15 +156,15 @@ void SensorPowerSystemPlugin::Configure(const ignition::gazebo::Entity &_entity,
         });
 
     // imu sensors
-    _ecm.Each<ignition::gazebo::components::Imu>(
-        [&](const ignition::gazebo::Entity &_entity,
-            const ignition::gazebo::components::Imu *_imu) -> bool
+    _ecm.Each<components::Imu>(
+        [&](const Entity &_entity,
+            const components::Imu *_imu) -> bool
         {
             // get the imu name
-            auto imuName = _ecm.Component<ignition::gazebo::components::Name>(_entity);
+            auto imuName = _ecm.Component<components::Name>(_entity);
             if (imuName)
             {
-                auto imuPtr = _ecm.Component<ignition::gazebo::components::Imu>(_entity);
+                auto imuPtr = _ecm.Component<components::Imu>(_entity);
                 auto imu = imuPtr->Data().ImuSensor();
                 auto parent = imu->Element()->GetParent();
                 if (parent->HasElement("power_load") && parent->HasElement("battery_name"))
@@ -173,11 +176,11 @@ void SensorPowerSystemPlugin::Configure(const ignition::gazebo::Entity &_entity,
                     sensorInfo.batteryName = parent->Get<std::string>("battery_name");
                     sensorInfo.enableSensor = true;
                     sensorInfo.dataUpdated = false;
-                    igndbg << "IMU: " << sensorInfo.name << " id: " << sensorInfo.id << std::endl;
-                    igndbg << "IMU: " << sensorInfo.name << " Power: " << sensorInfo.powerLoad << std::endl;
-                    igndbg << "IMU: " << sensorInfo.name << " Battery name: " << sensorInfo.batteryName << std::endl;
-                    igndbg << "IMU: " << sensorInfo.name << " is enabled: " << sensorInfo.enableSensor << std::endl;
-                    igndbg << "IMU: " << sensorInfo.name << " data updated: " << sensorInfo.dataUpdated << std::endl;
+                    gzdbg << "IMU: " << sensorInfo.name << " id: " << sensorInfo.id << std::endl;
+                    gzdbg << "IMU: " << sensorInfo.name << " Power: " << sensorInfo.powerLoad << std::endl;
+                    gzdbg << "IMU: " << sensorInfo.name << " Battery name: " << sensorInfo.batteryName << std::endl;
+                    gzdbg << "IMU: " << sensorInfo.name << " is enabled: " << sensorInfo.enableSensor << std::endl;
+                    gzdbg << "IMU: " << sensorInfo.name << " data updated: " << sensorInfo.dataUpdated << std::endl;
                     this->dataPtr->sensorsInfo.emplace_back(std::move(sensorInfo));
                     sensorCount++;
                 }
@@ -189,22 +192,22 @@ void SensorPowerSystemPlugin::Configure(const ignition::gazebo::Entity &_entity,
     for (auto &sensor : this->dataPtr->sensorsInfo)
     {
         std::string stateTopic{"/model/" + this->dataPtr->model.Name(_ecm) + "/sensor/" + sensor.name + "/activate"};
-        auto validSensorTopic = ignition::transport::TopicUtils::AsValidTopic(stateTopic);
+        auto validSensorTopic = transport::TopicUtils::AsValidTopic(stateTopic);
         if (validSensorTopic.empty())
         {
-            ignerr << "Failed to create valid topic. Not valid: ["
+            gzerr << "Failed to create valid topic. Not valid: ["
                    << sensor.name << "]" << std::endl;
             return;
         }
-        std::function<void(const ignition::msgs::Boolean &)> callback = std::bind(&SensorPowerSystemPrivate::OnActivateSensor,
+        std::function<void(const gz::msgs::Boolean &)> callback = std::bind(&SensorPowerSystemPrivate::OnActivateSensor,
                                                                                   this->dataPtr.get(), sensor.id, std::placeholders::_1);
         this->dataPtr->node.Subscribe(validSensorTopic, callback);
     }
 }
 
 //////////////////////////////////////////////////
-void SensorPowerSystemPlugin::PreUpdate(const ignition::gazebo::UpdateInfo &_info,
-                                        ignition::gazebo::EntityComponentManager &_ecm)
+void SensorPowerSystemPlugin::PreUpdate(const UpdateInfo &_info,
+                                        EntityComponentManager &_ecm)
 
 {
     if (_info.paused)
@@ -214,10 +217,10 @@ void SensorPowerSystemPlugin::PreUpdate(const ignition::gazebo::UpdateInfo &_inf
     if (!this->dataPtr->batteriesInitialized)
     {
         this->dataPtr->batteriesInitialized = true;
-        _ecm.Each<ignition::gazebo::components::BatterySoC, ignition::gazebo::components::Name>(
-            [&](const ignition::gazebo::Entity &_entity,
-                const ignition::gazebo::components::BatterySoC *_batterySoc,
-                const ignition::gazebo::components::Name *_name) -> bool
+        _ecm.Each<components::BatterySoC, components::Name>(
+            [&](const Entity &_entity,
+                const components::BatterySoC *_batterySoc,
+                const components::Name *_name) -> bool
             {
                 if (_name)
                 {
@@ -225,8 +228,8 @@ void SensorPowerSystemPlugin::PreUpdate(const ignition::gazebo::UpdateInfo &_inf
                     {
                         if (sensor.batteryName == _name->Data())
                         {
-                            igndbg << "Battery found for sensor: " << sensor.name << std::endl;
-                            igndbg << "Battery name: " << _name->Data() << std::endl;
+                            gzdbg << "Battery found for sensor: " << sensor.name << std::endl;
+                            gzdbg << "Battery name: " << _name->Data() << std::endl;
                             sensor.batteryExist = true;
                             sensor.batteryEntity = _entity;
                         }
@@ -239,14 +242,14 @@ void SensorPowerSystemPlugin::PreUpdate(const ignition::gazebo::UpdateInfo &_inf
             if (sensor.batteryExist)
             {
                 sensor.batteryConsumerEntity = _ecm.CreateEntity();
-                ignition::gazebo::components::BatteryPowerLoadInfo batteryPowerLoad{
+                components::BatteryPowerLoadInfo batteryPowerLoad{
                     sensor.batteryEntity, sensor.powerLoad};
-                _ecm.CreateComponent(sensor.batteryConsumerEntity, ignition::gazebo::components::BatteryPowerLoad(batteryPowerLoad));
+                _ecm.CreateComponent(sensor.batteryConsumerEntity, components::BatteryPowerLoad(batteryPowerLoad));
                 _ecm.SetParentEntity(sensor.batteryConsumerEntity, sensor.batteryEntity);
             }
             else
             {
-                igndbg << "Sensor " << sensor.name << " battery does not exist" << std::endl;
+                gzdbg << "Sensor " << sensor.name << " battery does not exist" << std::endl;
             }
         }
     }
@@ -263,17 +266,17 @@ void SensorPowerSystemPlugin::PreUpdate(const ignition::gazebo::UpdateInfo &_inf
                 }
                 std::lock_guard<std::mutex> lock(*sensor.mutex_ptr);
                 sensor.dataUpdated = false;
-                ignition::gazebo::v6::components::BatteryPowerLoadInfo batteryPowerLoad{
+                components::BatteryPowerLoadInfo batteryPowerLoad{
                     sensor.batteryConsumerEntity, setPower};
-                _ecm.SetComponentData<ignition::gazebo::components::BatteryPowerLoad>(sensor.batteryConsumerEntity, batteryPowerLoad);
+                _ecm.SetComponentData<components::BatteryPowerLoad>(sensor.batteryConsumerEntity, batteryPowerLoad);
             }
         }
     }
 }
 
 /////////////////////////////////////////////////
-void SensorPowerSystemPlugin::PostUpdate(const ignition::gazebo::UpdateInfo &_info,
-                                         const ignition::gazebo::EntityComponentManager &_ecm)
+void SensorPowerSystemPlugin::PostUpdate(const UpdateInfo &_info,
+                                         const EntityComponentManager &_ecm)
 
 {
     if(_info.paused)
@@ -285,13 +288,13 @@ void SensorPowerSystemPlugin::PostUpdate(const ignition::gazebo::UpdateInfo &_in
 
 /////////////////////////////////////////////////
 void SensorPowerSystemPrivate::HasSufficientBattery(
-    const ignition::gazebo::EntityComponentManager &_ecm)
+    const EntityComponentManager &_ecm)
 {
-      _ecm.Each<ignition::gazebo::components::BatterySoC>([&](
-        const ignition::gazebo::Entity &_entity,
-        const ignition::gazebo::components::BatterySoC *_data
+      _ecm.Each<components::BatterySoC>([&](
+        const Entity &_entity,
+        const components::BatterySoC *_data
       ){
-        auto BatteryName = _ecm.Component<ignition::gazebo::components::Name>(_entity);
+        auto BatteryName = _ecm.Component<components::Name>(_entity);
         if(!BatteryName)
         {
             return false;
@@ -315,19 +318,26 @@ void SensorPowerSystemPrivate::HasSufficientBattery(
 }
 
 /////////////////////////////////////////////////
-void SensorPowerSystemPrivate::OnActivateSensor(int _id, const ignition::msgs::Boolean &_msg)
+
+}  // namespace systems
+}
+}  // namespace sim
+}  // namespace gz
+
+void SensorPowerSystemPrivate::OnActivateSensor(int _id, const gz::msgs::Boolean &_msg)
 {
     std::lock_guard<std::mutex> lock(*this->sensorsInfo[_id].mutex_ptr);
     this->sensorsInfo[_id].enableSensor = _msg.data();
     this->sensorsInfo[_id].dataUpdated = true;
 }
 
-#include <ignition/plugin/Register.hh>
 
-IGNITION_ADD_PLUGIN(SensorPowerSystemPlugin,
-                    ignition::gazebo::System,
-                    SensorPowerSystemPlugin::ISystemConfigure,
-                    SensorPowerSystemPlugin::ISystemPreUpdate,
-                    SensorPowerSystemPlugin::ISystemPostUpdate)
+GZ_ADD_PLUGIN(gz::sim::systems::SensorPowerSystemPlugin,
+              gz::sim::System,
+              gz::sim::systems::SensorPowerSystemPlugin::ISystemConfigure,
+              gz::sim::systems::SensorPowerSystemPlugin::ISystemPreUpdate,
+              gz::sim::systems::SensorPowerSystemPlugin::ISystemPostUpdate)
 
-IGNITION_ADD_PLUGIN_ALIAS(SensorPowerSystemPlugin, "simulation::SensorPowerSystemPlugin")
+GZ_ADD_PLUGIN_ALIAS(SensorPowerSystemPlugin, 
+  "gz::sim::systems::SensorPowerSystemPlugin"
+  )
