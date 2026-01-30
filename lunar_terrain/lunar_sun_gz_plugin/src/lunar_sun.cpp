@@ -12,40 +12,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <ignition/gazebo/System.hh>
-#include <ignition/gazebo/World.hh>
-#include <ignition/gazebo/Model.hh>
-#include <ignition/gazebo/EntityComponentManager.hh>
-#include <ignition/math/Vector3.hh>
-#include <ignition/math/Pose3.hh>
+#include <gz/sim/System.hh>
+#include <gz/sim/World.hh>
+#include <gz/sim/Model.hh>
+#include <gz/sim/EntityComponentManager.hh>
+#include <gz/math/Vector3.hh>
+#include <gz/math/Pose3.hh>
 #include <sdf/Light.hh>
-#include <ignition/gazebo/components.hh>
-#include <ignition/plugin/Register.hh>
-#include <ignition/gazebo/Actor.hh>
-#include <ignition/transport/Node.hh>
+#include <gz/sim/components.hh>
+#include <gz/plugin/Register.hh>
+#include <gz/sim/Actor.hh>
+#include <gz/transport/Node.hh>
 #include <random>
 #include <iostream>
 
-#ifdef USE_IGNITION
-namespace gazebo = ignition::gazebo;
-#else
 namespace gazebo = gz::sim;
-#endif
 
 class LunarSun : public gazebo::System,
          public gazebo::ISystemConfigure,
-         public gazebo::ISystemUpdate {
+         public gazebo::ISystemPreUpdate {
   // Model entity
-  gazebo::World world_{gazebo::kNullEntity};
-
+  gazebo::World world_;
 
   // Joint entities
   gazebo::Entity actorEntity, lightEntity;
 
   // Whether the system has been properly configured
-  bool configured_{false};
+  bool configured_;
 
 public:
+
+  LunarSun()
+    : world_(gazebo::kNullEntity),
+    actorEntity(gazebo::kNullEntity),
+    lightEntity(gazebo::kNullEntity),
+    configured_(false) {
+  
+  }
+  
   void Configure(const gazebo::Entity& entity,
          const std::shared_ptr<const sdf::Element>& sdf,
          gazebo::EntityComponentManager& ecm,
@@ -55,9 +59,10 @@ public:
     this->actorEntity =
       ecm.EntityByComponents(gazebo::components::Name("animated_sun"));
 
-    LoadCSV("/home/spaceros-user/demos_ws/src/lunar_sun_gz_plugin/horizons_az_el.csv");
+    //LoadCSV("/home/spaceros-user/demos_ws/src/lunar_sun_gz_plugin/horizons_az_el.csv");
+    LoadCSV("/home/ana/ros2/craftsman/src/robots/space_ros_demos/lunar_terrain/lunar_sun_gz_plugin/horizons_az_el.csv");    
 
-    ignition::math::Pose3d startPose(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+    gz::math::Pose3d startPose(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     // Position the light above the ground
     ecm.CreateComponent(this->actorEntity,
               gazebo::components::Pose(startPose));
@@ -67,7 +72,7 @@ public:
     configured_ = true;
   }
 
-  void Update(const gazebo::UpdateInfo& info,
+  void PreUpdate(const gazebo::UpdateInfo& info,
         gazebo::EntityComponentManager& ecm) override {
     // Get actor pose
     auto actor = gazebo::Actor(this->actorEntity);
@@ -96,13 +101,13 @@ public:
       ecm.SetChanged(this->actorEntity, gazebo::components::TrajectoryPose::typeId,
              gazebo::ComponentState::PeriodicChange);
 
-      ignition::msgs::Light lightMsg;
+      gz::msgs::Light lightMsg;
       lightMsg.set_name("sunlight");
-      lightMsg.set_type(ignition::msgs::Light::DIRECTIONAL);
+      lightMsg.set_type(gz::msgs::Light::DIRECTIONAL);
 
       // Set the pose in the light message
       // Directly set the position components
-      ignition::msgs::Pose* poseLight2 = lightMsg.mutable_pose();
+      gz::msgs::Pose* poseLight2 = lightMsg.mutable_pose();
       poseLight2->mutable_position()->set_x(
         this->trajectory[this->trajectoryIndex].X());
       poseLight2->mutable_position()->set_y(
@@ -140,8 +145,8 @@ public:
 
       // Publish the light message to the light config service
       bool result;
-      ignition::msgs::Boolean res;
-      ignition::transport::Node node;
+      gz::msgs::Boolean res;
+      gz::transport::Node node;
       constexpr unsigned int timeout = 5000;
       bool executed = node.Request("/world/dem_heightmap/light_config", lightMsg,
                      timeout, res, result);
@@ -192,17 +197,17 @@ private:
       double elevation = std::stod(elevationStr);
 
       // Convert azimuth and elevation to radians and then to a Pose
-      ignition::math::Vector3d position(
+      gz::math::Vector3d position(
         100000 * cos(azimuth * M_PI / 180.0) * cos(elevation * M_PI / 180.0),
         100000 * sin(azimuth * M_PI / 180.0) * cos(elevation * M_PI / 180.0),
         (100000 * sin(elevation * M_PI / 180.0)) - 10000);
 
-      ignition::math::Pose3d pose(position, ignition::math::Quaterniond::Identity);
+      gz::math::Pose3d pose(position, gz::math::Quaterniond::Identity);
       this->trajectory.push_back(pose);
     }
   }
 
-  std::vector<ignition::math::Pose3d> trajectory;
+  std::vector<gz::math::Pose3d> trajectory;
   int trajectoryIndex = 0;
   std::chrono::_V2::steady_clock::duration startWaypointTime =
     std::chrono::steady_clock::duration::zero();
@@ -211,5 +216,7 @@ private:
     std::chrono::hours(1);
 };
 
-IGNITION_ADD_PLUGIN(LunarSun, gazebo::System, LunarSun::ISystemConfigure,
-          LunarSun::ISystemUpdate)
+GZ_ADD_PLUGIN(LunarSun, 
+              gazebo::System, 
+              LunarSun::ISystemConfigure,
+              LunarSun::ISystemPreUpdate)
