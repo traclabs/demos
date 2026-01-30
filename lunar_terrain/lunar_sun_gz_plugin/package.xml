@@ -21,6 +21,8 @@
     <depend condition="$GZ_VERSION == '' and $IGNITION_VERSION == ''">gz-plugin</depend>
     <depend condition="$GZ_VERSION == '' and $IGNITION_VERSION == ''">gz-sim6</depend>
 
+    <depend>ament_index_cpp</depend>
+  
     <test_depend>ament_lint_auto</test_depend>
     <test_depend>ament_cmake_copyright</test_depend>
     <test_depend>ament_cmake_cpplint</test_depend>

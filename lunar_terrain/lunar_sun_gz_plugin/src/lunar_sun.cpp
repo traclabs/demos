@@ -26,6 +26,8 @@
 #include <random>
 #include <iostream>
 
+#include <ament_index_cpp/get_package_share_directory.hpp>
+
 namespace gazebo = gz::sim;
 
 class LunarSun : public gazebo::System,
@@ -59,8 +61,8 @@ public:
     this->actorEntity =
       ecm.EntityByComponents(gazebo::components::Name("animated_sun"));
 
-    //LoadCSV("/home/spaceros-user/demos_ws/src/lunar_sun_gz_plugin/horizons_az_el.csv");
-    LoadCSV("/home/ana/ros2/craftsman/src/robots/space_ros_demos/lunar_terrain/lunar_sun_gz_plugin/horizons_az_el.csv");    
+    std::string pkg_share = ament_index_cpp::get_package_share_directory("lunar_sun_gz_plugin");
+    LoadCSV(pkg_share + "/config/horizons_az_el.csv");
 
     gz::math::Pose3d startPose(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     // Position the light above the ground

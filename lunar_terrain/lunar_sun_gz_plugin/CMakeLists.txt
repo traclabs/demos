@@ -6,6 +6,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 
 add_library(lunar_sun_gz_plugin SHARED
 src/lunar_sun.cpp)
@@ -26,6 +27,7 @@ else()
 endif()
 
 set_property(TARGET lunar_sun_gz_plugin PROPERTY CXX_STANDARD 17)
+ament_target_dependencies(lunar_sun_gz_plugin PUBLIC ament_index_cpp)
 
 install(
   TARGETS
@@ -33,6 +35,11 @@ install(
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
+
+install(
+  DIRECTORY config
+  DESTINATION share/${PROJECT_NAME}/
 )
 
 if(BUILD_TESTING)

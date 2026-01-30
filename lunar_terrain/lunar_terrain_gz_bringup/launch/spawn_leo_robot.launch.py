@@ -129,6 +129,11 @@ def generate_launch_description():
         description="Robot namespace",
     )
 
+    use_sim_time_arg = DeclareLaunchArgument(
+        'use_sim_time',
+        default_value='True'
+    )
+
     x_arg = DeclareLaunchArgument(
         'x_pose',
         default_value='0',
@@ -153,6 +158,7 @@ def generate_launch_description():
         [ x_arg,
           y_arg,
           z_arg,
+          use_sim_time_arg,
           name_argument, 
           OpaqueFunction(function=spawn_robot, args=[namespace])
         ]
