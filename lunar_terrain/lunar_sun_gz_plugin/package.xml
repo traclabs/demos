@@ -10,6 +10,8 @@
     <license>Apache License 2.0</license>
 
     <buildtool_depend>ament_cmake</buildtool_depend>
+    <!-- Harmonic -->
+    <depend condition="$GZ_VERSION == harmonic">gz-sim8</depend>    
     <!-- Garden -->
     <depend condition="$GZ_VERSION == garden or $IGNITION_VERSION == garden">gz-plugin2</depend>
     <depend condition="$GZ_VERSION == garden or $IGNITION_VERSION == garden">gz-sim7</depend>

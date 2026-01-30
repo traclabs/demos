@@ -10,31 +10,19 @@ find_package(ament_cmake REQUIRED)
 add_library(lunar_sun_gz_plugin SHARED
 src/lunar_sun.cpp)
 
-if(DEFINED ENV{GZ_VERSION} AND "$ENV{GZ_VERSION}" STREQUAL "garden")
+if( "$ENV{GZ_VERSION}" STREQUAL "harmonic" OR NOT DEFINED "ENV{GZ_VERSION}")
   find_package(gz-plugin2 REQUIRED COMPONENTS register)
   set(GZ_PLUGIN_VER ${gz-plugin2_VERSION_MAJOR})
 
-  find_package(gz-sim7 REQUIRED)
-  set(GZ_SIM_VER ${gz-sim7_VERSION_MAJOR})
+  find_package(gz-sim8 REQUIRED)
+  set(GZ_SIM_VER ${gz-sim8_VERSION_MAJOR})
 
-  target_link_libraries(lunar_sun_gz_plugin
+  target_link_libraries(lunar_sun_gz_plugin PRIVATE
     gz-sim${GZ_SIM_VER}::gz-sim${GZ_SIM_VER}
     gz-plugin${GZ_PLUGIN_VER}::gz-plugin${GZ_PLUGIN_VER}
-  )
-else()
-  #If GZ_VERSION is not set default to Fortress
-  find_package(ignition-plugin1 REQUIRED COMPONENTS register)
-  set(IGN_PLUGIN_VER ${ignition-plugin1_VERSION_MAJOR})
-
-  find_package(ignition-gazebo6 REQUIRED)
-  set(IGN_GAZEBO_VER ${ignition-gazebo6_VERSION_MAJOR})
-
-  add_definitions(-DUSE_IGNITION)
-
-  target_link_libraries(lunar_sun_gz_plugin
-    ignition-gazebo${IGN_GAZEBO_VER}::ignition-gazebo${IGN_GAZEBO_VER}
-    ignition-plugin${IGN_PLUGIN_VER}::ignition-plugin${IGN_PLUGIN_VER}
-  )
+)
+else()  
+  message(FATAL_ERROR "Unsupported GZ_VERSION: $ENV{GZ_VERSION}")
 endif()
 
 set_property(TARGET lunar_sun_gz_plugin PROPERTY CXX_STANDARD 17)
@@ -42,7 +30,9 @@ set_property(TARGET lunar_sun_gz_plugin PROPERTY CXX_STANDARD 17)
 install(
   TARGETS
   lunar_sun_gz_plugin
-  DESTINATION lib
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)

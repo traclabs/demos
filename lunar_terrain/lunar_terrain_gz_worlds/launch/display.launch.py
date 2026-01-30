@@ -24,12 +24,12 @@ import os
 
 def generate_launch_description():
     # robot_model = launch_ros.substitutions.FindPackageShare(package="leo_description").find("leo_description")
-    pkg_share = FindPackageShare("simulation")
+    pkg_share = FindPackageShare("lunar_terrain_gz_worlds")
     gz_verbosity = LaunchConfiguration("gz_verbosity")
     headless = LaunchConfiguration("headless")
     world = LaunchConfiguration('world')
 
-    world_path = PathJoinSubstitution([pkg_share, "models", "lunar_terrain", "world", world])
+    world_path = PathJoinSubstitution([pkg_share, "worlds", world])
 
     # gazebo have to be executed with shell=False, or test_launch won't terminate it
     #   see: https://github.com/ros2/launch/issues/545
