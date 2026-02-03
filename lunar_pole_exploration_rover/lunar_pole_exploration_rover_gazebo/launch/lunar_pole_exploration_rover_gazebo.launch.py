@@ -31,6 +31,15 @@ import xacro
 def generate_launch_description():
 
     lunar_pole_exploration_rover_models_path = get_package_share_directory('lunar_pole_exploration_rover_gazebo')
+    lunar_pole_world_model = os.path.join(lunar_pole_exploration_rover_models_path, 'worlds', 'lunar_pole.world')
+
+    launch_args = [
+      DeclareLaunchArgument("world", default_value=lunar_pole_world_model),
+      DeclareLaunchArgument("x", default_value="0.0"),
+      DeclareLaunchArgument("y", default_value="0.0"),
+      DeclareLaunchArgument("z", default_value="0.0"),
+      DeclareLaunchArgument("yaw", default_value="0.0"),
+    ]
 
     env = {'GZ_SIM_SYSTEM_PLUGIN_PATH':
            ':'.join([environ.get('GZ_SIM_SYSTEM_PLUGIN_PATH', default=''),
@@ -40,7 +49,6 @@ def generate_launch_description():
 
     urdf_model_path = os.path.join(lunar_pole_exploration_rover_models_path, 'models', 'lunar_pole_exploration_rover',
         'urdf', 'lunar_pole_exploration_rover.xacro')
-    lunar_pole_world_model = os.path.join(lunar_pole_exploration_rover_models_path, 'worlds', 'lunar_pole.world')
 
     doc = xacro.process_file(urdf_model_path)
     robot_description = {'robot_description': doc.toxml()}
@@ -50,7 +58,7 @@ def generate_launch_description():
             PathJoinSubstitution([get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py']),
             launch_arguments = [
                ('gz_args', [
-                   lunar_pole_world_model,
+                   LaunchConfiguration("world"),
                    ' -r',
                    ' -v 4' 
                ])
@@ -149,7 +157,10 @@ def generate_launch_description():
         arguments=[
             '-name', 'lunar_pole_exploration_rover',
             '-topic', robot_description,
-            '-z', '0.0',
+            '-x', LaunchConfiguration("x"),
+            '-y', LaunchConfiguration("y"),
+            '-z', LaunchConfiguration("z"),
+            '-Y', LaunchConfiguration("yaw"),
         ],
         output='screen'
 
@@ -192,7 +203,8 @@ def generate_launch_description():
     )
 
 
-    return LaunchDescription([
+    return LaunchDescription(
+        launch_args + [
         SetParameter(name='use_sim_time', value=True),
         start_world,
         robot_state_publisher,
