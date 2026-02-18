@@ -43,22 +43,22 @@
         <!-- Wheel Joints Interfaces-->
         <joint name="front_left_wheel_joint">
             <command_interface name="velocity" />
-            <state_interface name="position" />                    
+            <state_interface name="position" />
         </joint>
         <joint name="rear_left_wheel_joint">
             <command_interface name="velocity" />
-            <state_interface name="position" />                    
+            <state_interface name="position" />
         </joint>
         <joint name="front_right_wheel_joint">
             <command_interface name="velocity" />
-            <state_interface name="position" />                    
+            <state_interface name="position" />
         </joint>
         <joint name="rear_right_wheel_joint">
             <command_interface name="velocity" />
-            <state_interface name="position" />                    
+            <state_interface name="position" />
         </joint>
 
-        <!-- Passive joints - No command interface -->      
+        <!-- Passive joints - No command interface -->
         <joint name="front_left_suspension_joint">
             <state_interface name="position"/>
         </joint>
@@ -143,12 +143,12 @@
       </plugin>
     </gazebo>
 
-    
+
 
 
     <!-- Sensor suit as detailed for NASA VIPER Rover -->
     <!-- https://ntrs.nasa.gov/api/citations/20210015009/downloads/20210015009%20-%20Colaprete-VIPER%20PIP%20final.pdf -->
-    <gazebo reference="nav_camera_link_left">
+    <!-- <gazebo reference="nav_camera_link_left">
         <sensor type="camera" name="NavCam_left">
             <visualize>1</visualize>
             <update_rate>10.0</update_rate>
@@ -370,7 +370,7 @@
             <always_on>1</always_on>
             <topic>hazcam_right_rear/image_raw</topic>
         </sensor>
-    </gazebo>
+    </gazebo> -->
 
     <gazebo reference="body">
         <sensor name="imu_sensor" type="imu">
