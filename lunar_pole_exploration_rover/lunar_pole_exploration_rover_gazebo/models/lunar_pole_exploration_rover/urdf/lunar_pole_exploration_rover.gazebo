@@ -71,6 +71,18 @@
         <joint name="rear_right_suspension_joint">
             <state_interface name="position"/>
         </joint>
+        
+        <!-- Solar Panels -->
+        <joint name="left_solar_panel_joint">
+            <state_interface name="position"/>
+        </joint>
+        <joint name="right_solar_panel_joint">
+            <state_interface name="position"/>
+        </joint>
+        <joint name="rear_solar_panel_joint">
+            <state_interface name="position"/>
+        </joint>
+                
     </ros2_control>
 
     <gazebo>
