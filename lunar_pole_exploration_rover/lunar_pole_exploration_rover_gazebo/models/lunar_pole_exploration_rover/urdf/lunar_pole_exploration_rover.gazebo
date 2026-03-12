@@ -97,7 +97,7 @@
             <odom_publish_frequency>10</odom_publish_frequency>
         </plugin>
 
-        <!--<plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+        <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
             <render_engine>ogre2</render_engine>
             <background_color>0.0 0.0 0.0 1</background_color>
             <disable_on_drained_battery>true</disable_on_drained_battery>
@@ -114,7 +114,7 @@
         <plugin filename="libSolarPanelPlugin.so" name="SolarPanelPlugin">
             <link_name>rear_solar_panel</link_name>
             <nominal_power>150.0</nominal_power>
-        </plugin>-->
+        </plugin>
 
     <plugin filename="libSensorPowerSystemPlugin.so" name="SensorPowerSystemPlugin">
     </plugin>

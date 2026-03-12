@@ -60,7 +60,7 @@ def generate_launch_description():
                ('gz_args', [
                    LaunchConfiguration("world"),
                    ' -r',
-                   ' -v 4' 
+                   ' -v 4'
                ])
             ]   
     )

@@ -34,6 +34,7 @@
 #include <gz/sim/EntityComponentManager.hh>
 #include <gz/sim/Util.hh>
 #include <gz/sim/System.hh>
+#include <gz/sim/rendering/Events.hh>
 
 #include <gz/physics/Entity.hh>
 #include <gz/common/Event.hh>
@@ -76,6 +77,9 @@ public:
 public:
   gz::common::ConnectionPtr sceneChangeConnection;
 
+public:
+  gz::common::ConnectionPtr preRenderConnection{nullptr};
+
   /// \brief Just a mutex for thread safety
 public:
   std::mutex mutex;
@@ -115,6 +119,15 @@ public:
   /// \brief Publisher for the radioisotope thermal generator output
 public:
   gz::transport::Node::Publisher nominalPowerPub;
+
+public:
+
+  gz::math::Vector3d sunDirection;
+  gz::math::Pose3d linkPose;
+  gz::math::Pose3d sunPose;
+
+public:
+  void PerformPostRenderingOperations();
 };
 
 //////////////////////////////////////////////////
@@ -177,6 +190,7 @@ void SolarPanelPlugin::Configure(const gz::sim::Entity &_entity,
   }
 
   this->dataPtr->sceneChangeConnection = this->dataPtr->sceneEvent.Connect(std::bind(&SolarPanelPlugin::SetScene, this, std::placeholders::_1));
+  this->dataPtr->preRenderConnection = _eventMgr.Connect<gz::sim::events::PostRender>(std::bind(&SolarPanelPluginPrivate::PerformPostRenderingOperations, this->dataPtr.get()));
 }
 
 //////////////////////////////////////////////////
@@ -187,21 +201,6 @@ void SolarPanelPlugin::PostUpdate(const gz::sim::UpdateInfo &_info,
   {
     return;
   }
-  if (!this->dataPtr->scene)
-  {
-    if (!this->dataPtr->FindScene())
-    {
-      gzwarn << "Rendering scene not available yet" << std::endl;
-      return;
-    }
-  }
-
-  std::shared_ptr<gz::rendering::RayQuery> rayQuery = this->dataPtr->scene->CreateRayQuery();
-  if (!rayQuery)
-  {
-    gzerr << "Failed to create RayQuery" << std::endl;
-    return;
-  }
 
   if (this->dataPtr->scopedVisualChildren.empty())
   {
@@ -210,7 +209,6 @@ void SolarPanelPlugin::PostUpdate(const gz::sim::UpdateInfo &_info,
 
   // Get sun entity
   gz::sim::Entity sunEntity;
-  gz::math::Pose3d sunPose;
   _ecm.Each<gz::sim::components::Name, gz::sim::components::Pose>(
       [&](const gz::sim::Entity &_entity,
           const gz::sim::components::Name *_name,
@@ -219,7 +217,7 @@ void SolarPanelPlugin::PostUpdate(const gz::sim::UpdateInfo &_info,
         if (_name->Data() == "sun")
         {
           sunEntity = _entity;
-          sunPose = _pose->Data();
+          this->dataPtr->sunPose = _pose->Data();
           return false; // Stop iteration
         }
         return true;
@@ -230,6 +228,7 @@ void SolarPanelPlugin::PostUpdate(const gz::sim::UpdateInfo &_info,
     gzerr << "Sun entity not found" << std::endl;
     return;
   }
+
 
   // Check if sun entity is of type "light" and has a "direction" element
   const auto *lightComp = _ecm.Component<gz::sim::components::Light>(sunEntity);
@@ -246,7 +245,7 @@ void SolarPanelPlugin::PostUpdate(const gz::sim::UpdateInfo &_info,
   }
 
   // Rotate sun direction according to sun pose orientation
-  gz::math::Vector3d sunDirection = sunPose.Rot().RotateVector(direction);
+  this->dataPtr->sunDirection = this->dataPtr->sunPose.Rot().RotateVector(direction);
 
   if (this->dataPtr->linkEntity == gz::sim::v8::kNullEntity)
   {
@@ -254,27 +253,51 @@ void SolarPanelPlugin::PostUpdate(const gz::sim::UpdateInfo &_info,
         this->dataPtr->model.LinkByName(_ecm, this->dataPtr->linkName);
   }
 
-  gz::math::Pose3d linkPose = gz::sim::worldPose(this->dataPtr->linkEntity, _ecm);
+  this->dataPtr->linkPose = gz::sim::worldPose(this->dataPtr->linkEntity, _ecm);
+
+}
+
+//////////////////////////////////////////////////
+void SolarPanelPluginPrivate::PerformPostRenderingOperations()
+{
+
+  if (!this->scene)
+  {
+    if (!this->FindScene())
+    {
+      gzwarn << "Rendering scene not available yet" << std::endl;
+      return;
+    }
+  }
+
+  std::shared_ptr<gz::rendering::RayQuery> rayQuery = this->scene->CreateRayQuery();
+  if (!rayQuery)
+  {
+    gzerr << "Failed to create RayQuery" << std::endl;
+    return;
+  }
+
   // Perform ray cast from link to sun
-  gz::math::Vector3d start = linkPose.Pos();
-  gz::math::Vector3d end = sunPose.Pos();
+  gz::math::Vector3d start = this->linkPose.Pos();
+  gz::math::Vector3d end = this->sunPose.Pos();
 
   rayQuery->SetOrigin(end);
   rayQuery->SetDirection(start - end);
 
   // Check if ray intersects with any obstacles
   auto result = rayQuery->ClosestPoint();
+
   bool isValid = result;
 
   std::string objectName = "unknown";
   bool isInLOS = false;
-  gz::rendering::NodePtr node = this->dataPtr->scene->NodeById(result.objectId);
+  gz::rendering::NodePtr node = this->scene->NodeById(result.objectId);
   if (node)
   {
     objectName = node->Name();
     if (isValid)
     {
-      isInLOS = (any_of(this->dataPtr->scopedVisualChildren.begin(), this->dataPtr->scopedVisualChildren.end(), [&](const std::string &elem)
+      isInLOS = (any_of(this->scopedVisualChildren.begin(), this->scopedVisualChildren.end(), [&](const std::string &elem)
                         { return elem == objectName; }));
     }
   }
@@ -284,8 +307,8 @@ void SolarPanelPlugin::PostUpdate(const gz::sim::UpdateInfo &_info,
 
   // Compute the angle between the link normal and sun direction
   // Calculate dot product
-  gz::math::Vector3d linkNormal = linkPose.Rot().RotateVector(gz::math::Vector3d::UnitZ);
-  float dotProduct = linkNormal.Dot(-sunDirection); // Negate sunDirection because it points from sun to scene
+  gz::math::Vector3d linkNormal = this->linkPose.Rot().RotateVector(gz::math::Vector3d::UnitZ);
+  float dotProduct = linkNormal.Dot(-this->sunDirection); // Negate sunDirection because it points from sun to scene
 
   // Solar panel will not receive any power if angle is more than 90deg (sun rays hitting horizontally or below)
   if ((dotProduct > 0.0F) && (isInLOS))
@@ -309,16 +332,16 @@ void SolarPanelPlugin::PostUpdate(const gz::sim::UpdateInfo &_info,
     float effectiveAreaFactor = std::max(0.0F, cosAngle);
 
     // Compute current power based on the angle
-    currentPower = this->dataPtr->nominalPower * effectiveAreaFactor;
+    currentPower = this->nominalPower * effectiveAreaFactor;
   }
 
   // Publish result
   gz::msgs::Float msg;
   msg.set_data(currentPower);
-  this->dataPtr->nominalPowerPub.Publish(msg);
+  this->nominalPowerPub.Publish(msg);
 
-  gzdbg << "Solar Panel Plugin:: Current power output: " << currentPower << " watts" << std::endl;
-  gzdbg << "Solar Panel Plugin:: In line of sight: " << (isInLOS ? "Yes" : "No") << std::endl;
+  //gzdbg << "Solar Panel Plugin:: Current power output: " << currentPower << " watts" << std::endl;
+  //gzdbg << "Solar Panel Plugin:: In line of sight: " << (isInLOS ? "Yes" : "No") << std::endl;
 }
 
 //////////////////////////////////////////////////
