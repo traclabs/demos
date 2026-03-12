@@ -52,7 +52,7 @@ def generate_launch_description():
                ('gz_args', [
                    lunar_pole_world_model,
                    ' -r',
-                   ' -v 4' 
+                   ' -v 4'
                ])
             ]   
     )
