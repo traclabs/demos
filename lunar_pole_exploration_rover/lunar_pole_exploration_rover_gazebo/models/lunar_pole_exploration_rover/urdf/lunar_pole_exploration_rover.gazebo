@@ -148,18 +148,18 @@
 
     <!-- Sensor suit as detailed for NASA VIPER Rover -->
     <!-- https://ntrs.nasa.gov/api/citations/20210015009/downloads/20210015009%20-%20Colaprete-VIPER%20PIP%20final.pdf -->
-    <!-- <gazebo reference="nav_camera_link_left">
+    <gazebo reference="nav_camera_link_left">
         <sensor type="camera" name="NavCam_left">
             <visualize>1</visualize>
-            <update_rate>10.0</update_rate>
+            <update_rate>1.0</update_rate>
                 <power_load>83.0</power_load>
                 <battery_name>rechargeable_battery</battery_name>
             <camera>
                 <pose>1.0 0 0 0 0 0</pose>
                 <horizontal_fov>1.22173</horizontal_fov>
                 <image>
-                    <width>2048</width>
-                    <height>2048</height>
+                    <width>256</width>
+                    <height>256</height>
                     <format>L16</format>
                 </image>
                 <clip>
@@ -176,7 +176,7 @@
         </sensor>
     </gazebo>
 
-    <gazebo reference="nav_camera_link_right">
+    <!-- <gazebo reference="nav_camera_link_right">
         <sensor type="camera" name="NavCam_right">
             <visualize>1</visualize>
             <update_rate>10.0</update_rate>
