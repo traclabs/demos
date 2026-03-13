@@ -8,13 +8,13 @@
     <!-- tY is either 1 for ${side} side or -1 for right side -->
 
     <link name='${placement}_${side}_suspension'>
-        <collision>
+        <!-- <collision>
           <origin xyz="0 0 0"
               rpy="0 0 0"/>
           <geometry>
             <mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/suspension_${side}.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
           </geometry>
-        </collision>
+        </collision> -->
         <visual>
           <origin xyz="0 0 0"
               rpy="0 0 0"/>
@@ -45,13 +45,13 @@
       </joint>
 
       <link name='${placement}_${side}_wheel_axle'>
-        <collision>
+        <!-- <collision>
           <origin xyz="0 0 0"
               rpy="0 0 0"/>
           <geometry>
             <mesh filename="package://lunar_pole_exploration_rover_gazebo/models/lunar_pole_exploration_rover/meshes/wheel_axle_${side}.dae" scale="${scale_XYZ} ${scale_XYZ} ${scale_XYZ}"/>
           </geometry>
-        </collision>
+        </collision> -->
         <visual>
           <origin xyz="0 0 0"
               rpy="0 0 0"/>
